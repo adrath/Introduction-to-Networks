@@ -107,7 +107,7 @@ if __name__ == "__main__":
     serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     #Bind to the port
-    serverSocket.bind((",int(portNumber)))
+    serverSocket.bind(('',int(portNumber)))
 
     #Look at up to 1 request
     serverSocket.listen(1)
