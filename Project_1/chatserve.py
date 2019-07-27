@@ -22,7 +22,7 @@
             A : PORTNUM.  This causes a connection to be established between 
             Host A and Host B.  Host A and host B are now peers, and may alternate 
             sending and receiving messages.  Responses from host A should have 
-            host A’s "handle" prepended. 
+            host A's "handle" prepended. 
         6. Host A responds to Host B, or closes the connection with the command "\quit" 
         7. Host B responds to Host A, or closes the connection with the command "\quit" 
         8. If the connection is not closed, repeat from 6. 
