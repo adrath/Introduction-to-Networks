@@ -40,9 +40,9 @@ Input: username
 Output: username
 '''
 def getUsername(username):
-    username = input("Please enter a username that is less than 10 characters\n")
+    username = raw_input("Please enter a username that is less than 10 characters\n")
     while len(username) > 10 or len(username) == 0:
-        username = input("Error! Please enter a username that is less than 10 characters\n")
+        username = raw_input("Error! Please enter a username that is less than 10 characters\n")
     return username
 
 '''
@@ -82,7 +82,7 @@ def sendAndRecv(connection, clientUsername, username):
         #write a message to be sent to the client
         toClient = ""
         while len(toClient) > 500 or len(toClient) == 0:
-            toClient = input("%s> " % username)
+            toClient = raw_input("%s> " % username)
         
         #detemine if the user input a string that contains \quit, discontinue the connection with client
         if "\quit" in toClient:
