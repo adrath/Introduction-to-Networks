@@ -47,7 +47,7 @@
 * Input: argv[1] (portNumber), argv[2] (hostname)
 * Output: struct sockaddr_in serverAddress
 ******************************************************************************/
-struct sockaddr_in setUpAddress(char* pn, char* user){
+struct sockaddr_in setUpAddress(char* user, char* pn){
     int portNumber;
     struct sockaddr_in serverAddress;
     struct hostent* serverHostInfo;
