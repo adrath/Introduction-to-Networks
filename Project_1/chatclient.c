@@ -91,7 +91,7 @@ void getUsername(char* username){
 ******************************************************************************/
 int createSocket(struct sockaddr_in serverAddress){
     //create the socket
-    int socketFD = socket(AF_INET, SOCKET_STREAM, 0);
+    int socketFD = socket(AF_INET, SOCK_STREAM, 0);
     if (socketFD < 0){
         perror("Client: Error opening socket\n");
         exit(1);
@@ -102,7 +102,7 @@ int createSocket(struct sockaddr_in serverAddress){
         perror("Client: Error connecting to server\n");
         exit(1);
     }
-    return socketFD
+    return socketFD;
 }
 
 /******************************************************************************
@@ -152,7 +152,7 @@ void sendAndRecv(int socketFD, char* username, char* serverName){
         //get input message from user
         printf("%s> ", username);
         fgets(outMessage, sizeof(outMessage) - 1, stdin);
-        outMessage[strcspn(outMessage, '\n')] = '\0';
+        outMessage[strcspn(outMessage, "\n")] = '\0';
 
         //send message to server
         check = send(socketFD, outMessage, sizeof(outMessage), 0);
@@ -176,7 +176,7 @@ void sendAndRecv(int socketFD, char* username, char* serverName){
             break;
         }
         else {
-            prinf("%s> %s", serverName, inMessage);
+            printf("%s> %s", serverName, inMessage);
         }
     }    
 }
@@ -188,7 +188,7 @@ void sendAndRecv(int socketFD, char* username, char* serverName){
 ******************************************************************************/
 int main(int argc, char* argv[]){
     //Declare variables
-    int i, j, socketFD;
+    int socketFD;
     struct sockaddr_in serverAddress;
     char username[10];
     char serverName[10];
