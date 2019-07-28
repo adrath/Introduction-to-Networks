@@ -159,6 +159,7 @@ void sendAndRecv(int socketFD, char* username, char* serverName){
             		int ch;
             		do ch = getchar(); while (ch != '\n');
 	    	}
+	}
 	outMessage[strcspn(outMessage, "\n")] = '\0';
 
         //send message to server
