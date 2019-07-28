@@ -41,7 +41,7 @@ Output: username
 '''
 def getUsername(username):
     username = raw_input("Please enter a username that is less than 10 characters\n")
-    while len(username) > 10 or len(username) == 0:
+    while len(username) > 10 or len(username) == 0 or " " in username:
         username = raw_input("Error! Please enter a username that is less than 10 characters\n")
     return username
 
