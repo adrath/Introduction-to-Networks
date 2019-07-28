@@ -156,7 +156,7 @@ void sendAndRecv(int socketFD, char* username, char* serverName){
         	printf("%s> ", username);
         	fgets(outMessage, sizeof(outMessage) - 1, stdin);
         	outMessage[strcspn(outMessage, "\n")] = '\0';
-	}
+	    }
 
         //send message to server
         check = send(socketFD, outMessage, sizeof(outMessage), 0);
@@ -168,12 +168,12 @@ void sendAndRecv(int socketFD, char* username, char* serverName){
             printf("CLIENT: WARNING: Not all data written to socket!\n");
         }
 	
-	if (strstr(outMessage, "\\quit") != NULL){
-		printf("Exiting chat with server\n");
-		break;
-	}
+	    if (strstr(outMessage, "\\quit") != NULL){
+		    printf("Exiting chat with server\n");
+		    break;
+	    }
 	
-	//receive message from server
+	    //receive message from server
         check = 0;
         check = recv(socketFD, inMessage, sizeof(inMessage) - 1, 0);
         if (check < 0){
@@ -215,10 +215,11 @@ int main(int argc, char* argv[]){
 	    memset(username, '\0', sizeof(username));
         printf("Please enter a 10 character user handle that will display on your messages.\n");
         fgets(username, sizeof(username), stdin);
-	    username[strcspn(username, "\n")] = '\0';
-    }
-    
-    while ((getchar()) != '\n');
+	    if (username[strlen(username)-1] != '\n'){
+            int ch;
+            do ch = getchar(); while (ch != '\n');
+        }
+    username[strcspn(username, "\n")] = '\0';
 
     //Set up the server address structure
     memset((char*)&serverAddress, '\0', sizeof(serverAddress));
