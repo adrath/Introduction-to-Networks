@@ -70,21 +70,6 @@ struct sockaddr_in setUpAddress(char* user, char* pn){
 }
 
 /******************************************************************************
-* Function: void getUsername(char* username)
-* Description: get user handle from the user
-* Input: char* username
-* Output: char* username
-******************************************************************************/
-void getUsername(char* username){
-    while (strlen(username) > 10 || strlen(username) == 0 || strstr(username, " ") != NULL){
-	    memset(username, '\0', sizeof(username));
-        printf("Please enter a 10 character user handle that will display on your messages.\n");
-        fgets(username, sizeof(username) - 1, stdin);
-	    username[strcspn(username, "\n")] = '\0';
-    }
-}
-
-/******************************************************************************
 * Function: int createSocket(struct sockaddr_in serverAddress)
 * Description: set up the socket and double check that the socket created actually
 *   connected to the server. Establish the connection as well.
