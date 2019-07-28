@@ -76,7 +76,7 @@ struct sockaddr_in setUpAddress(char* user, char* pn){
 * Output: char* username
 ******************************************************************************/
 void getUsername(char* username){
-    while (strlen(username) > 10 || strlen(username) == 0){
+    while (strlen(username) > 10 || strlen(username) == 0 || strstr(username, " ") != NULL){
         printf("Please enter a 10 character user handle that will display on your messages.\n");
         fgets(username, sizeof(username) - 1, stdin);
 	username[strcspn(username, "\n")] = '\0';
@@ -151,9 +151,11 @@ void sendAndRecv(int socketFD, char* username, char* serverName){
         check = 0;
 	
 	//get input message from user
-        printf("%s> ", username);
-        fgets(outMessage, sizeof(outMessage) - 1, stdin);
-        outMessage[strcspn(outMessage, "\n")] = '\0';
+	while (strlen(outMessage) > 500 || strlen(outMessage) == 0){
+        	printf("%s> ", username);
+        	fgets(outMessage, sizeof(outMessage) - 1, stdin);
+        	outMessage[strcspn(outMessage, "\n")] = '\0';
+	}
 
         //send message to server
         check = send(socketFD, outMessage, sizeof(outMessage), 0);
