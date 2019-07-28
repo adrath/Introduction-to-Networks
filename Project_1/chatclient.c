@@ -199,8 +199,8 @@ int main(int argc, char* argv[]){
     //Declare variables
     int socketFD;
     struct sockaddr_in serverAddress;
-    char username[10];
-    char serverName[10];
+    char username[12];
+    char serverName[12];
 
     //Check the correct number of arguments were given, if not error and exit
     if (argc < 3){
@@ -217,6 +217,8 @@ int main(int argc, char* argv[]){
         fgets(username, sizeof(username), stdin);
 	    username[strcspn(username, "\n")] = '\0';
     }
+    
+    while ((getchar()) != '\n');
 
     //Set up the server address structure
     memset((char*)&serverAddress, '\0', sizeof(serverAddress));
