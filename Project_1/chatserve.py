@@ -79,6 +79,11 @@ def sendAndRecv(connection, clientUsername, username):
         #print message to server
         print "%s> %s" % (clientUsername, fromClient)
         
+        #detemine if the user input a string that contains \quit, discontinue the connection with client
+        if "\quit" in fromClient:
+            print "Connection has been terminated, exiting chat with %s" % clientUsername
+            break;
+        
         #write a message to be sent to the client
         toClient = ""
         while len(toClient) > 500 or len(toClient) == 0:
