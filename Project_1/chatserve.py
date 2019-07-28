@@ -53,7 +53,7 @@ Input: connection, username
 Output: clientUsername
 '''
 def exchangeUsernames(connection, username):
-    clientUsername = connection.recv[510]
+    clientUsername = connection.recv(510)
     connection.send(username)
     return clientUsername
 
