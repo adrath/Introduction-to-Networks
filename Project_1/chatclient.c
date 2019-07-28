@@ -219,6 +219,7 @@ int main(int argc, char* argv[]){
             int ch;
             do ch = getchar(); while (ch != '\n');
         }
+    }
     username[strcspn(username, "\n")] = '\0';
 
     //Set up the server address structure
