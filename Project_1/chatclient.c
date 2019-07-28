@@ -36,7 +36,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#define MAX_SIZE 500
+#define MAX_SIZE 501
 
 /******************************************************************************
 * Function: struct sockaddr_in setUpAddress(char* pn, char* user)
@@ -155,8 +155,11 @@ void sendAndRecv(int socketFD, char* username, char* serverName){
 	while (strlen(outMessage) > 500 || strlen(outMessage) == 0){
         	printf("%s> ", username);
         	fgets(outMessage, sizeof(outMessage) - 1, stdin);
-        	outMessage[strcspn(outMessage, "\n")] = '\0';
-	    }
+		if (outMessage[strlen(outMessage)-1] != '\n'){
+            		int ch;
+            		do ch = getchar(); while (ch != '\n');
+	    	}
+	outMessage[strcspn(outMessage, "\n")] = '\0';
 
         //send message to server
         check = send(socketFD, outMessage, sizeof(outMessage), 0);
