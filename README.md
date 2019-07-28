@@ -1,2 +1,4 @@
-# CS372-Project_1
-Implement A Client-Server Network Application - Simple Chat System
+# CS372
+Introduction to Networks at Oregon State University
+Instructor: William Pfiel
+Summer 2019
