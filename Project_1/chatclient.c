@@ -78,7 +78,7 @@ struct sockaddr_in setUpAddress(char* user, char* pn){
 void getUsername(char* username){
     while (strlen(username) > 10 || strlen(username) == 0){
         printf("Please enter a 10 character user handle that will display on your messages.\n");
-        scanf("%s", username);
+        fgets(username, sizeof(username) - 1, stdin);
     }
 }
 
