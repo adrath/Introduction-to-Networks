@@ -79,6 +79,7 @@ void getUsername(char* username){
     while (strlen(username) > 10 || strlen(username) == 0){
         printf("Please enter a 10 character user handle that will display on your messages.\n");
         fgets(username, sizeof(username) - 1, stdin);
+	username[strcspn(username, "\n")] = '\0';
     }
 }
 
