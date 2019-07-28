@@ -149,6 +149,21 @@ void sendAndRecv(int socketFD, char* username, char* serverName){
         memset(inMessage, '\0', sizeof(inMessage));
         check = 0;
 
+	//receive message from server
+        check = 0;
+        check = recv(socketFD, inMessage, sizeof(inMessage) - 1, 0);
+        if (check < 0){
+            perror("Client: Error receiving message from server\n");
+            exit(1);
+        }
+        else if (check == 0){
+            printf("The connection has been closed by the server\n");
+            break;
+        }
+        else {
+            printf("%s> %s\n", serverName, inMessage);
+        }
+	
         //get input message from user
         printf("%s> ", username);
         fgets(outMessage, sizeof(outMessage) - 1, stdin);
@@ -168,21 +183,6 @@ void sendAndRecv(int socketFD, char* username, char* serverName){
 		printf("Exiting chat with server\n");
 		break;
 	}
-
-        //receive message from server
-        check = 0;
-        check = recv(socketFD, inMessage, sizeof(inMessage) - 1, 0);
-        if (check < 0){
-            perror("Client: Error receiving message from server\n");
-            exit(1);
-        }
-        else if (check == 0){
-            printf("The connection has been closed by the server\n");
-            break;
-        }
-        else {
-            printf("%s> %s\n", serverName, inMessage);
-        }
     }    
 }
 
