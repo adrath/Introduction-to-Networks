@@ -163,6 +163,11 @@ void sendAndRecv(int socketFD, char* username, char* serverName){
         if (check < strlen(outMessage)){
             printf("CLIENT: WARNING: Not all data written to socket!\n");
         }
+	
+	if (strstr(outMessage, "\quit") == NULL){
+		printf("Exiting chat with server\n");
+		break;
+	}
 
         //receive message from server
         check = 0;
@@ -176,7 +181,7 @@ void sendAndRecv(int socketFD, char* username, char* serverName){
             break;
         }
         else {
-            printf("%s> %s", serverName, inMessage);
+            printf("%s> %s\n", serverName, inMessage);
         }
     }    
 }
