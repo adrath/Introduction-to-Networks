@@ -214,7 +214,7 @@ int main(int argc, char* argv[]){
     while (strlen(username) > 10 || strlen(username) == 0 || strstr(username, " ") != NULL){
 	    memset(username, '\0', sizeof(username));
         printf("Please enter a 10 character user handle that will display on your messages.\n");
-        fgets(username, sizeof(username) - 1, stdin);
+        fgets(username, sizeof(username), stdin);
 	    username[strcspn(username, "\n")] = '\0';
     }
 
