@@ -215,8 +215,8 @@ int main(int argc, char* argv[]){
 	    memset(username, '\0', sizeof(username));
         printf("Please enter a 10 character user handle that will display on your messages.\n");
         fgets(username, sizeof(username) - 1, stdin);
+	    username[strcspn(username, "\n")] = '\0';
     }
-    username[strcspn(username, "\n")] = '\0';
 
     //Set up the server address structure
     memset((char*)&serverAddress, '\0', sizeof(serverAddress));
