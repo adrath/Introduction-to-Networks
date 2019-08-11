@@ -111,18 +111,6 @@ int createSocket(struct sockaddr_in serverAddress){
         exit(1);
     }
 
-    return socketFD;
-}
-
-/*******************************************************************************
-* Function: int bindAndListen(int socketFD)
-* Description: this function will be responsible for initializing the bind() and
-*   listen() function necessary for the server to listen for the connection from
-*   the client. This function will return the socketFD.
-* Input: int socketFD
-* Output: int socketFD
-*******************************************************************************/
-int bindAndListen(int socketFD){
     // Use SO_REUSEADDR to Indicates that the rules used in validating addresses supplied in a bind() call should allow reuse of local addresses.
 	int enable = 1;
 	setsockopt(socketFD, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int));
@@ -139,6 +127,32 @@ int bindAndListen(int socketFD){
 
     return socketFD;
 }
+
+/*******************************************************************************
+* Function: int bindAndListen(int socketFD)
+* Description: this function will be responsible for initializing the bind() and
+*   listen() function necessary for the server to listen for the connection from
+*   the client. This function will return the socketFD.
+* Input: int socketFD
+* Output: int socketFD
+*******************************************************************************/
+// int bindAndListen(int socketFD){
+//     // Use SO_REUSEADDR to Indicates that the rules used in validating addresses supplied in a bind() call should allow reuse of local addresses.
+// 	int enable = 1;
+// 	setsockopt(socketFD, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int));
+
+//     // Enable the socket to begin listening
+// 	if (bind(socketFD, (struct sockaddr *)&serverAddress, sizeof(serverAddress)) < 0) { // Connect socket to port
+// 		fprintf(stderr, "ERROR on binding\n");
+//         exit(1);
+// 	}
+// 	if(listen(socketFD, 5)< 0){ // Flip the socket on - it can now receive up to 5 connections
+//         fprintf(stderr, "ERROR in listening\n");
+//         exit(1);
+//     }
+
+//     return socketFD;
+// }
 
 
 /*******************************************************************************
@@ -163,7 +177,6 @@ void recvMessage(int socketFD, char* inMessage[]){
     }
     else if (check == 0){
         printf("The connection has been closed by the ftclient\n");
-        break;
     }
 }
 
@@ -225,7 +238,7 @@ int getDir(char* listOfFiles[], int* numOfFiles){
     
     //Add the number of newline characters that need to be sent to cDirSize
     cDirSize += i - 1;
-    numOfFiles = i;
+    *numOfFiles = i;
 
     //Close directory
     closedir(cDir);
@@ -244,10 +257,10 @@ int getDir(char* listOfFiles[], int* numOfFiles){
 *******************************************************************************/
 int getFileSize(char* fileName){
     //Declare variables
-    FILE* fptr;
+    FILE* fptr = fopen(fileName, "r");
     
     //Check to see if the file exist or fails to open
-    if (fptr = open(fileName, O_RDONLY) == -1){
+    if (fptr == NULL){
         printf("getFileSize: Unable to open file\n");
         return -1;
     }
@@ -288,15 +301,17 @@ int sendFile(int socketFD, char* fileName, int fileSize){
     }
     else {
         //Declare variables
-        FILE* fptr;
         char sendBuffer[100];
         int x;
+        FILE* fptr = fopen(fileName, "r");
     
         //Check to see if the file exist or fails to open
-        if (fptr = open(fileName, O_RDONLY) == -1){
+        if (fptr == NULL){
             printf("getFileSize: Unable to open file\n");
             return -1;
         }
+
+        //Send the contents of the file to the client
         while((x = fread(sendBuffer, 1, sizeof(sendBuffer), fptr)) > 0){
             send(socketFD, sendBuffer, x, 0);
         }
@@ -353,7 +368,7 @@ int main(int argc, char* argv[]) {
 
     //create the socket and establish a connection to client
     socketFD = createSocket(serverAddress);
-    socketFD = bindAndListen(socketFD);
+    //socketFD = bindAndListen(socketFD);
     
     //Keep this socket up and running until ended with a SIGINT call.
     while(1){
@@ -410,10 +425,7 @@ int main(int argc, char* argv[]) {
             //send the directory
             int i = 0;
             while (i < numOfFiles){
-                confirm = sendDir(DPSocket, directoryArray[i], dirSize);
-                if (confirm < 0){
-                    fprintf(stderr, "FTSERVER: Error sending the directory"); exit(1);
-                }
+                sendDir(DPSocket, directoryArray[i], dirSize);
                 i++;
             }
 
@@ -500,4 +512,6 @@ int main(int argc, char* argv[]) {
 * //Send and recv files
 * https://stackoverflow.com/questions/11952898/c-send-and-receive-file
 *
+* //Getting a file size
+* https://stackoverflow.com/questions/238603/how-can-i-get-a-files-size-in-c
 ******************************************************************************/
