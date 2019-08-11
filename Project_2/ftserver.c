@@ -234,7 +234,6 @@ int getDir(char* listOfFiles[], int* numOfFiles){
             listOfFiles[i] = cDirectory->d_name;
             cDirSize += strlen(listOfFiles[i]);
             i++;
-        }
     }
     
     //Add the number of newline characters that need to be sent to cDirSize
@@ -245,7 +244,6 @@ int getDir(char* listOfFiles[], int* numOfFiles){
     closedir(cDir);
 
     return cDirSize;
-
 }
 
 
@@ -259,10 +257,10 @@ int getDir(char* listOfFiles[], int* numOfFiles){
 *******************************************************************************/
 int getFileSize(char* fileName){
     //Declare variables
-    int fptr = fopen(fileName, "r");
+    FILE* fptr = fopen(fileName, "r");
     
     //Check to see if the file exist or fails to open
-    if (fptr == -1){
+    if (fptr == NULL){
         printf("getFileSize: Unable to open file\n");
         return -1;
     }
@@ -276,10 +274,7 @@ int getFileSize(char* fileName){
     int size = st.st_size;
 
     //close the file
-    if (fclose(fptr) < 0){
-        printf("getFileSize: file failed to close\n");
-        return -1;
-    }
+    fclose(fptr);
 
     //Return the size of the file
     return size;
@@ -308,10 +303,10 @@ int sendFile(int socketFD, char* fileName, int fileSize){
         //Declare variables
         char sendBuffer[100];
         int x;
-        int fptr = fopen(fileName, "r");
+        FILE* fptr = fopen(fileName, "r");
     
         //Check to see if the file exist or fails to open
-        if (fptr == -1){
+        if (fptr == NULL){
             printf("getFileSize: Unable to open file\n");
             return -1;
         }
@@ -334,7 +329,7 @@ int sendFile(int socketFD, char* fileName, int fileSize){
 *   the entire list of characters was sent. Will call setUpAddress and createSocket
 *   to create the connection between the server and the client to send the directory.
 *******************************************************************************/
-void sendDir(int socketFD, char* listOfFiles, int dirSize){
+void sendDir(int socketFD, char* listOfFiles[], int dirSize){
     size_t stringLength = strlen(listOfFiles);
     size_t charWritten = 0;
 
@@ -394,7 +389,7 @@ int main(int argc, char* argv[]) {
         sendConfirm(establishedConnectionFD);
 
         //determine what request to perform
-        if (strcmp(command, "l") == NULL){
+        if (strstr(command, "l") == NULL){
             //Initialize directory character array
             char* directoryArray[MAX_SIZE];
             memset(directoryArray, '\0', sizeof(directoryArray));
@@ -441,7 +436,7 @@ int main(int argc, char* argv[]) {
             close(DPSocket);
 
         }
-        else if(strcmp(command, 'g') == NULL){
+        else if(strstr(command, 'g') == NULL){
             //receive the data port number
             recvMessage(establishedConnectionFD, dataPort);
             int dp = atoi(dataPort);
