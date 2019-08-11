@@ -234,6 +234,7 @@ int getDir(char* listOfFiles[], int* numOfFiles){
             listOfFiles[i] = cDirectory->d_name;
             cDirSize += strlen(listOfFiles[i]);
             i++;
+        }
     }
     
     //Add the number of newline characters that need to be sent to cDirSize
@@ -265,7 +266,7 @@ int getFileSize(char* fileName){
         return -1;
     }
 
-    fd = fileno(fptr);
+    int fd = fileno(fptr);
     
     //If the file was successfully opened, determine the size of the file in bytes
     struct stat st;
