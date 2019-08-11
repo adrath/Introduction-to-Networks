@@ -267,14 +267,14 @@ int getFileSize(char* fileName){
     
     //If the file was successfully opened, determine the size of the file in bytes
     struct stat st;
-    if (fstat(fptr, &st) < 0){
+    if (stat(fptr, &st) < 0){
         printf("getFileSize: file size is less than 0\n");
         return -1;
     }
     int size = st.st_size;
 
     //close the file
-    close(fptr);
+    fclose(fptr);
 
     //Return the size of the file
     return size;
@@ -329,12 +329,12 @@ int sendFile(int socketFD, char* fileName, int fileSize){
 *   the entire list of characters was sent. Will call setUpAddress and createSocket
 *   to create the connection between the server and the client to send the directory.
 *******************************************************************************/
-void sendDir(int socketFD, char* listOfFiles[], int dirSize){
-    int stringLength = strlen(listOfFiles);
-    int charWritten = 0;
+void sendDir(int socketFD, char* listOfFiles, int dirSize){
+    size_t stringLength = strlen(listOfFiles);
+    size_t charWritten = 0;
 
     while(charWritten < stringLength){
-        int check = send(socketFD, listOfFiles, stringLength, 0);
+        ssize_t check = send(socketFD, listOfFiles, stringLength, 0);
         if(check < 0){
             fprintf(stderr, "FTSERVER: ERROR writing directory to socket\n"); exit(1);
         }
@@ -389,7 +389,7 @@ int main(int argc, char* argv[]) {
         sendConfirm(establishedConnectionFD);
 
         //determine what request to perform
-        if (strstr(command, "l") == NULL){
+        if (strcmp(command, "l") == NULL){
             //Initialize directory character array
             char* directoryArray[MAX_SIZE];
             memset(directoryArray, '\0', sizeof(directoryArray));
@@ -436,7 +436,7 @@ int main(int argc, char* argv[]) {
             close(DPSocket);
 
         }
-        else if(strstr(command, 'g') == NULL){
+        else if(strcmp(command, 'g') == NULL){
             //receive the data port number
             recvMessage(establishedConnectionFD, dataPort);
             int dp = atoi(dataPort);
