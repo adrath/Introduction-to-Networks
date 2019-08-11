@@ -234,6 +234,7 @@ int getDir(char* listOfFiles[], int* numOfFiles){
             listOfFiles[i] = cDirectory->d_name;
             cDirSize += strlen(listOfFiles[i]);
             i++;
+        }
     }
     
     //Add the number of newline characters that need to be sent to cDirSize
@@ -244,6 +245,7 @@ int getDir(char* listOfFiles[], int* numOfFiles){
     closedir(cDir);
 
     return cDirSize;
+
 }
 
 
@@ -257,10 +259,10 @@ int getDir(char* listOfFiles[], int* numOfFiles){
 *******************************************************************************/
 int getFileSize(char* fileName){
     //Declare variables
-    FILE* fptr = fopen(fileName, "r");
+    int fptr = fopen(fileName, "r");
     
     //Check to see if the file exist or fails to open
-    if (fptr == NULL){
+    if (fptr == -1){
         printf("getFileSize: Unable to open file\n");
         return -1;
     }
@@ -274,7 +276,10 @@ int getFileSize(char* fileName){
     int size = st.st_size;
 
     //close the file
-    fclose(fptr);
+    if (fclose(fptr) < 0){
+        printf("getFileSize: file failed to close\n");
+        return -1;
+    }
 
     //Return the size of the file
     return size;
@@ -303,10 +308,10 @@ int sendFile(int socketFD, char* fileName, int fileSize){
         //Declare variables
         char sendBuffer[100];
         int x;
-        FILE* fptr = fopen(fileName, "r");
+        int fptr = fopen(fileName, "r");
     
         //Check to see if the file exist or fails to open
-        if (fptr == NULL){
+        if (fptr == -1){
             printf("getFileSize: Unable to open file\n");
             return -1;
         }
@@ -373,9 +378,9 @@ int main(int argc, char* argv[]) {
     //Keep this socket up and running until ended with a SIGINT call.
     while(1){
         //intialize variables
-        char* command[10];
-        char* dataPort[10];
-        char* sizeConfirm[10];
+        char command[10];
+        char dataPort[10];
+        char sizeConfirm[10];
 
         //Wait to accept connection
         int sizeOfClientInfo = sizeof(clientAddress); // Get the size of the address for the client that will connect
