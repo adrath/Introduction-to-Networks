@@ -264,10 +264,12 @@ int getFileSize(char* fileName){
         printf("getFileSize: Unable to open file\n");
         return -1;
     }
+
+    fd = fileno(fptr);
     
     //If the file was successfully opened, determine the size of the file in bytes
     struct stat st;
-    if (stat(fptr, &st) < 0){
+    if (fstat(fd, &st) < 0){
         printf("getFileSize: file size is less than 0\n");
         return -1;
     }
