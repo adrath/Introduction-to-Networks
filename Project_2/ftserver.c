@@ -236,7 +236,7 @@ int getDir(char* listOfFiles[], int* numOfFiles){
             i++;
         }
     }
-    
+
     //Add the number of newline characters that need to be sent to cDirSize
     cDirSize += i - 1;
     *numOfFiles = i;
@@ -377,8 +377,8 @@ int main(int argc, char* argv[]) {
     while(1){
         //intialize variables
         char* command[10];
-        char* dataPort[10];
-        char* sizeConfirm[10];
+        char dataPort[10];
+        char sizeConfirm[10];
 
         //Wait to accept connection
         int sizeOfClientInfo = sizeof(clientAddress); // Get the size of the address for the client that will connect
