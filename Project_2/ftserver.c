@@ -4,7 +4,7 @@
 * Assignment: Project 2
 * Filename: ftserver.c
 * Date Created: 8/5/19
-* Last Updated: 8/10/19
+* Last Updated: 8/11/19
 *
 * Description:
 *    Design and implement a simple file transfer system, i.e., create 
@@ -105,11 +105,11 @@ int createSocket(struct sockaddr_in serverAddress){
         exit(1);
     }
 
-    //connect to server
-    if (connect(socketFD, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) < 0){
-        perror("FTSERVER: Error connecting to server\n");
-        exit(1);
-    }
+    // //connect to server
+    // if (connect(socketFD, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) < 0){
+    //     perror("FTSERVER: Error connecting to server\n");
+    //     exit(1);
+    // }
 
     // Use SO_REUSEADDR to Indicates that the rules used in validating addresses supplied in a bind() call should allow reuse of local addresses.
 	int enable = 1;
@@ -499,6 +499,8 @@ int main(int argc, char* argv[]) {
 * CS344 Lecture Notes for Module 4 (server.c and client.c)
 * https://www.geeksforgeeks.org/socket-programming-cc/
 * https://stackoverflow.com/questions/17131863/passing-string-to-a-function-in-c-with-or-without-pointers
+* https://stackoverflow.com/questions/15739490/should-use-size-t-or-ssize-t
+* https://stackoverflow.com/questions/2620146/how-do-i-return-multiple-values-from-a-function-in-c
 *
 * //open, read and close directory
 * https://stackoverflow.com/questions/3554120/open-directory-using-c
