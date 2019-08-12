@@ -41,11 +41,11 @@ Description:
                          necessary), and displays a "transfer complete" 
                          message on-screen
                  or
-                     ii) sends an appropriate error message (“File not found”
+                     ii) sends an appropriate error message ("File not found"
                          , etc.) to ftclient on connection P, and ftclient 
                          displays the message on-screen.
-             d) ftserver closes connection Q (don’t leave open sockets!).
-     8. ftclient closes connection P (don’t leave open sockets!) and terminates.
+             d) ftserver closes connection Q (don't leave open sockets!).
+     8. ftclient closes connection P (don't leave open sockets!) and terminates.
      9. ftserver repeats from 2 (above) until terminated by a supervisor (SIGINT).
 
 '''
