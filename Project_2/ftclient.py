@@ -149,11 +149,11 @@ if __name__ == "__main__":
 
         #wait for ack that received the request for the directory
         confirmation = initConnP.recv(3)[0:-1]
-        if (confirmation != "OK"){
+        if (confirmation != "OK")
             print "FTCLIENT: ERROR sending or receiving command\n"
             print "Confirmation = %s\n" % str(confirmation)
             exit(1)
-        }
+        
 
         #set up the new socket on data port (connection Q)
         #Create the initial TCP socket object (Connection P)
@@ -175,11 +175,11 @@ if __name__ == "__main__":
 
         #receive confirmation that data port was received
         confirmation = initConnP.recv(3)[0:-1]
-        if (confirmation != "OK"){
+        if (confirmation != "OK")
             print "FTCLIENT: ERROR sending or receiving data port\n"
             print "Confirmation = %s\n" % str(confirmation)
             exit(1)
-        }
+        
 
         #receive the size of the directory from the server on connection Q
         int(dirSize) = dataConnQ.recv(7)[0:-1]
