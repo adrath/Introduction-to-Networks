@@ -95,7 +95,7 @@ Description:
 '''
 if __name__ == "__main__":
     #validate user input length
-    inputLength = strlen(argv)
+    inputLength = len(sys.argv)
     if (inputLength < 5 or inputLength > 6):
         print("Please enter in format: python ftclient.py [server host] [server port] [command] [filename] [data port]\n")
         exit(1)
