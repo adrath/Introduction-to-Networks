@@ -49,8 +49,11 @@ Description:
      9. ftserver repeats from 2 (above) until terminated by a supervisor (SIGINT).
 
 '''
-from socket import *
+import socket
 import sys
+from os import path
+from struct import *
+from time import sleep
 
 '''
 Function: createSocket()
