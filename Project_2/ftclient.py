@@ -16,7 +16,7 @@ Description:
      2. ftserver waits on <PORTNUM> for a client request.
      3. ftclient starts on Host B, and validates any pertinent 
          command-line parameters. (<SERVER_HOST>, <SERVER_PORT>, 
-         <COMMAND>, <FILENAME>, <DATA_PORT>, etc…)
+         <COMMAND>, <FILENAME>, <DATA_PORT>, etc...)
      4. ftserver and ftclient establish a TCP control connection 
          on <SERVER_PORT>. (For the remainder of this description, call
          this connection P)
