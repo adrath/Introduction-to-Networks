@@ -134,7 +134,7 @@ if __name__ == "__main__":
     #Create the initial TCP socket object (Connection P)
     initConnP = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    initConnP.connect((host,serverPort))
+    initConnP.connect((serverHost,serverPort))
     # #Bind to the port
     # serverSocket.bind(('',int(serverPort)))
 
