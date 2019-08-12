@@ -128,17 +128,18 @@ if __name__ == "__main__":
         exit(1)
 
     #Create the initial TCP socket object (Connection P)
-    serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    initConnP = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    #Bind to the port
-    serverSocket.bind(('',int(serverPort)))
+    initConnP.connect((host,serverPort))
+    # #Bind to the port
+    # serverSocket.bind(('',int(serverPort)))
 
-    #Look at up to 1 request
-    serverSocket.listen(1)
+    # #Look at up to 1 request
+    # serverSocket.listen(1)
 
     #establish a new socket object usable to send and receive data on the connection and the address
     #   bound to the socket on the other end of the connection.
-    initConnP, addr = serverSocket.accept()
+    #initConnP, addr = serverSocket.accept()
     print "Connected on address %s" % str(addr)
 
     #If getting the directory from the server
