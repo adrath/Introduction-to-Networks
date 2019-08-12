@@ -144,7 +144,7 @@ if __name__ == "__main__":
     #establish a new socket object usable to send and receive data on the connection and the address
     #   bound to the socket on the other end of the connection.
     #initConnP, addr = serverSocket.accept()
-    print "Connected on address %s" % str(addr)
+    #print "Connected on address %s" % str(addr)
 
     #If getting the directory from the server
     if (commandID == "l"):
