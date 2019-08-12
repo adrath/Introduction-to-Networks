@@ -103,7 +103,7 @@ if __name__ == "__main__":
 
     #initialize the variables from user input
     serverHost = sys.argv[1]
-    serverPort = sys.argv[2]
+    serverPort = int(sys.argv[2])
     command = sys.argv[3]
     commandID = "f"
 
