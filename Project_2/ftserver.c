@@ -403,17 +403,15 @@ int main(int argc, char* argv[]) {
 
             //receive the data port number
             recvMessage(establishedConnectionFD, dataPort);
-            int dp = atoi(dataPort);
-            if (dp < 0){
-                fprintf(stderr, "Please get a data port between 1024-65525"); exit(1);
-            }
+
+            //send confirmation that data port was recv.
             sendConfirm(establishedConnectionFD);
 
             //establish the data port connection
             int DPSocket;
             struct sockaddr_in clientAddressDP;
             memset((char*)&clientAddressDP, '\0', sizeof(clientAddressDP));
-            clientAddressDP = setUpAddress(dp);
+            clientAddressDP = setUpAddress(dataPort);
             DPSocket = createSocket(clientAddressDP);
 
             //send size of directory
@@ -442,10 +440,9 @@ int main(int argc, char* argv[]) {
         else if(strstr(command, 'g') == NULL){
             //receive the data port number
             recvMessage(establishedConnectionFD, dataPort);
-            int dp = atoi(dataPort);
-            if (dp < 0){
-                fprintf(stderr, "Please get a data port between 1024-65525"); exit(1);
-            }
+            
+            //send confirmation that recv dataPort
+            sendConfirm(establishedConnectionFD);
 
             //receive fileName
             char* fileName[MAX_SIZE];
@@ -457,7 +454,7 @@ int main(int argc, char* argv[]) {
             int DPSocket;
             struct sockaddr_in clientAddressDP;
             memset((char*)&clientAddressDP, '\0', sizeof(clientAddressDP));
-            clientAddressDP = setUpAddress(dp);
+            clientAddressDP = setUpAddress(dataPort);
             DPSocket = createSocket(clientAddressDP);
 
             //check to see if the file exits (send an ack saying if the file exists or not)
