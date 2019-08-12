@@ -376,7 +376,7 @@ int main(int argc, char* argv[]) {
     //Keep this socket up and running until ended with a SIGINT call.
     while(1){
         //intialize variables
-        char* command[10];
+        char command[10];
         char dataPort[10];
         char sizeConfirm[10];
 
