@@ -415,7 +415,7 @@ int main(int argc, char* argv[]) {
             DPSocket = createSocket(clientAddressDP);
 
             //send size of directory
-            int confirm = send(DPSocket, dirSize, sizeof(dirSize), 0);
+            int confirm = send(DPSocket, &dirSize, sizeof(dirSize), 0);
             if (confirm < 0){
                 fprintf(stderr, "FTSERVER: Error sending the directory size"); exit(1);
             }
@@ -437,7 +437,7 @@ int main(int argc, char* argv[]) {
             close(DPSocket);
 
         }
-        else if(strstr(command, 'g') == NULL){
+        else if(strstr(command, "g") == NULL){
             //receive the data port number
             recvMessage(establishedConnectionFD, dataPort);
             
@@ -445,7 +445,7 @@ int main(int argc, char* argv[]) {
             sendConfirm(establishedConnectionFD);
 
             //receive fileName
-            char* fileName[MAX_SIZE];
+            char fileName[MAX_SIZE];
             memset(fileName, '\0', sizeof(fileName));
             recvMessage(establishedConnectionFD, fileName);
             sendConfirm(establishedConnectionFD);
@@ -461,7 +461,7 @@ int main(int argc, char* argv[]) {
             int fileSize = getFileSize(fileName);
 
             //send size of file
-            int confirm = send(DPSocket, fileSize, sizeof(fileSize), 0);
+            int confirm = send(DPSocket, &fileSize, sizeof(fileSize), 0);
             if (confirm < 0){
                 fprintf(stderr, "FTSERVER: Error sending the directory size"); exit(1);
             }
