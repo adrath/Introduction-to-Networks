@@ -163,7 +163,7 @@ int createSocket(struct sockaddr_in serverAddress){
 * Input: int socketFD;
 * Output: N/A
 *******************************************************************************/
-void recvMessage(int socketFD, char* inMessage[]){    
+void recvMessage(int socketFD, char* inMessage){    
     //initialize the inMessage each time this function is called
     memset(inMessage, '\0', sizeof(inMessage));
 
@@ -332,7 +332,7 @@ int sendFile(int socketFD, char* fileName, int fileSize){
 *   the entire list of characters was sent. Will call setUpAddress and createSocket
 *   to create the connection between the server and the client to send the directory.
 *******************************************************************************/
-void sendDir(int socketFD, char* listOfFiles[], int dirSize){
+void sendDir(int socketFD, char* listOfFiles, int dirSize){
     size_t stringLength = strlen(listOfFiles);
     size_t charWritten = 0;
 
