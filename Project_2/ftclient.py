@@ -49,7 +49,7 @@ Description:
      9. ftserver repeats from 2 (above) until terminated by a supervisor (SIGINT).
 
 '''
-import socket import *
+from socket import *
 import sys
 
 '''
