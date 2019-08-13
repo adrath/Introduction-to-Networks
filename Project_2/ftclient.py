@@ -152,7 +152,7 @@ if __name__ == "__main__":
             exit(1)
 
         #send the data port number to server on connection P
-        initConnP.send(dataPort)
+        initConnP.send(str(dataPort))
 
         #receive confirmation that data port was received
         confirmation = initConnP.recv(3)[0:-1]
