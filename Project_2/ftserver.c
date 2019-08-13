@@ -164,6 +164,8 @@ int createDataSocket(struct sockaddr_in serverAddress){
         perror("FTSERVER: Error connecting to server\n");
         exit(1);
     }
+
+    return socketFD;
 }
 
 /*******************************************************************************
