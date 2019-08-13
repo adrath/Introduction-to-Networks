@@ -462,7 +462,7 @@ int main(int argc, char* argv[]) {
 
             int check = 0;
             while (check < sizeOfIP){
-                check += recv(socketFD, ipAddr, sizeof(ipAddr) - 1, 0);
+                check += recv(establishedConnectionFD, ipAddr, sizeof(ipAddr) - 1, 0);
                 if (check < 0){
                     perror("FTSERVER: Error receiving message from ftclient\n");
                     exit(1);
