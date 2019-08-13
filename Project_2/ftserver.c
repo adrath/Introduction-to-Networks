@@ -444,9 +444,6 @@ int main(int argc, char* argv[]) {
 
             printf("dataPort: %s\n", ipAddr);
 
-            //send confirmation that ip address was recv.
-            sendConfirm(establishedConnectionFD);
-
             //establish the data port connection
             int DPSocket = createDataSocket(establishedConnectionFD, dataPort);
 
