@@ -168,6 +168,7 @@ if __name__ == "__main__":
         print "ipAddr: %s\n" % ipAddr
         
         #send IP address to server
+        x = 0
         while(x < ipAddrSize):
             y = initConnP.send(ipAddr)
             x += y
