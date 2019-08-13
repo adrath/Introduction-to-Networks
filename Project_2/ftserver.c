@@ -462,7 +462,7 @@ int main(int argc, char* argv[]) {
 
             int check = 0;
             while (check < sizeOfIP){
-                check += recv(establishedConnectionFD, ipAddr, sizeof(ipAddr) - 1, 0);
+                int check2 = recv(establishedConnectionFD, ipAddr, sizeof(ipAddr) - 1, 0);
                 if (check < 0){
                     perror("FTSERVER: Error receiving message from ftclient\n");
                     exit(1);
@@ -470,6 +470,7 @@ int main(int argc, char* argv[]) {
                 else if (check == 0){
                     printf("The connection has been closed by the ftclient\n");
                 }
+                check += check2
             }
 
             printf("dataPort: %s\n", ipAddr);
