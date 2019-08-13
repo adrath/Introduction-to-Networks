@@ -89,9 +89,9 @@ Input: N/A
 Output: return ipAddr
 '''
 def getIP():
-    s = socket.socket(AF_INET, SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    return s.getsockname()[0]
+    hostname = socket.gethostname()    
+    IPAddr = socket.gethostbyname(hostname)
+    return IPAddr
 
 
 
