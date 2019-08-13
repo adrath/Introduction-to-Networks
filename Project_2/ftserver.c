@@ -443,12 +443,14 @@ int main(int argc, char* argv[]) {
 
             //receive the data port number
             recvMessage(establishedConnectionFD, dataPort);
+            printf("dataPort: %s\n", dataPort);
 
             //send confirmation that data port was recv.
             sendConfirm(establishedConnectionFD);
 
             //get ip address from client
             recvMessage(establishedConnectionFD, ipAddr);
+            printf("dataPort: %s\n", ipAddr);
 
             //send confirmation that ip address was recv.
             sendConfirm(establishedConnectionFD);
