@@ -458,7 +458,7 @@ int main(int argc, char* argv[]) {
             sendConfirm(establishedConnectionFD);
 
             //get ip address from client
-            recvMessage(establishedConnectionFD, ipAddr);
+            //recvMessage(establishedConnectionFD, ipAddr);
 
             int check = 0;
             while (check < sizeOfIP){
