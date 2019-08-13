@@ -167,6 +167,14 @@ if __name__ == "__main__":
 
         print "ipAddrSize: %d" % ipAddrSize
 
+        initConnP.send(str(ipAddrSize))
+        #receive confirmation that data port was received
+        confirmation = initConnP.recv(3)[0:-1]
+        if (confirmation != "OK"):
+            print "FTCLIENT: ERROR sending or receiving data port\n"
+            print "Confirmation = %s\n" % str(confirmation)
+            exit(1)
+
         print "ipAddr: %s\n" % ipAddr
         
         #send IP address to server
