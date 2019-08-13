@@ -56,8 +56,16 @@ from struct import *
 from time import sleep
 
 '''
-Function: createSocket()
+Function: def createSocket()
 Description: set up a socket to connect to ftserver.
+Input:
+Output:
+'''
+
+
+'''
+Function: def sendMessage()
+Description: send a message to the server
 
 Input:
 Output:
@@ -65,33 +73,12 @@ Output:
 
 
 '''
-Function: 
-Description:
+Function: def recvMessage()
+Description: receive message from the server
 
 Input:
 Output:
 '''
-
-
-'''
-Function: 
-Description:
-
-Input:
-Output:
-'''
-
-
-'''
-Function: def getIP()
-Description: get the IP address of ftclient
-Input: N/A
-Output: return ipAddr
-'''
-def getIP():
-    hostname = socket.gethostname()    
-    IPAddr = socket.gethostbyname(hostname)
-    return IPAddr
 
 
 
@@ -188,6 +175,9 @@ if __name__ == "__main__":
             print "Connection has ended, exiting chat with %s" % clientUsername
             print "dirSize = %d\n" % int(dirSize)
             exit(1)
+
+        #confirm that the size of the directory was recv
+        dataConnQ.send("OK")
 
         #receive the directory from the server on connection Q
         x = 0
