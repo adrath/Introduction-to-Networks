@@ -123,7 +123,7 @@ int createSocket(struct sockaddr_in serverAddress){
 }
 
 
-int createDataSocket(int establishedConnectionFD, int dataPort){
+int createDataSocket(int establishedConnectionFD, char* dataPort){
     struct sockaddr_storage addr;
     char ipstr[15];
     
@@ -413,7 +413,6 @@ int main(int argc, char* argv[]) {
         char sizeConfirm[10];
         char ipAddr[100];
         char ipSize[10];
-        int dp;
 
         //Wait to accept connection
         int sizeOfClientInfo = sizeof(clientAddress); // Get the size of the address for the client that will connect
@@ -440,10 +439,6 @@ int main(int argc, char* argv[]) {
             recvMessage(establishedConnectionFD, dataPort);
             printf("dataPort: %s\n", dataPort);
 
-            //Convert dataPort into an integer
-            dp = atoi(dataPort);
-
-
             //send confirmation that data port was recv.
             sendConfirm(establishedConnectionFD);
 
@@ -453,7 +448,7 @@ int main(int argc, char* argv[]) {
             sendConfirm(establishedConnectionFD);
 
             //establish the data port connection
-            int DPSocket = createDataSocket(establishedConnectionFD, dp);
+            int DPSocket = createDataSocket(establishedConnectionFD, dataPort);
 
             printf("connection!\n");fflush(stdout);
 
@@ -494,7 +489,7 @@ int main(int argc, char* argv[]) {
             sendConfirm(establishedConnectionFD);
 
             //establish the data port connection
-            int DPSocket = createDataSocket(establishedConnectionFD, dp);
+            int DPSocket = createDataSocket(establishedConnectionFD, dataPort);
 
             //check to see if the file exits (send an ack saying if the file exists or not)
             int fileSize = getFileSize(fileName);
