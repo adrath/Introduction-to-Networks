@@ -439,7 +439,7 @@ int main(int argc, char* argv[]) {
         printf("seriously part 4\n");fflush(stdout);
 
         //determine what request to perform
-        if (strcmp(command, "l") == NULL){
+        if (strstr(command, "l") == NULL){
             //Initialize directory character array
             char* directoryArray[MAX_SIZE];
             memset(directoryArray, '\0', sizeof(directoryArray));
@@ -497,7 +497,7 @@ int main(int argc, char* argv[]) {
             close(DPSocket);
 
         }
-        else if(strcmp(command, "g") == NULL){
+        else if(strstr(command, "g") == NULL){
             //receive the data port number
             recvMessage(establishedConnectionFD, dataPort);
             
