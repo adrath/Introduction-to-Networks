@@ -83,12 +83,15 @@ Output:
 
 
 '''
-Function: 
-Description:
-
-Input:
-Output:
+Function: def getIP()
+Description: get the IP address of ftclient
+Input: N/A
+Output: return ipAddr
 '''
+def getIP():
+    s = socket(AF_INET, SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    return s.getsockname()[0]
 
 
 
@@ -135,16 +138,6 @@ if __name__ == "__main__":
     initConnP = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     initConnP.connect((serverHost,serverPort))
-    # #Bind to the port
-    # serverSocket.bind(('',int(serverPort)))
-
-    # #Look at up to 1 request
-    # serverSocket.listen(1)
-
-    #establish a new socket object usable to send and receive data on the connection and the address
-    #   bound to the socket on the other end of the connection.
-    #initConnP, addr = serverSocket.accept()
-    #print "Connected on address %s" % str(addr)
 
     #If getting the directory from the server
     if (commandID == "l"):
@@ -157,10 +150,31 @@ if __name__ == "__main__":
             print "FTCLIENT: ERROR sending or receiving command\n"
             print "Confirmation = %s\n" % str(confirmation)
             exit(1)
+
+        #send the data port number to server on connection P
+        initConnP.send(dataPort)
+
+        #receive confirmation that data port was received
+        confirmation = initConnP.recv(3)[0:-1]
+        if (confirmation != "OK"):
+            print "FTCLIENT: ERROR sending or receiving data port\n"
+            print "Confirmation = %s\n" % str(confirmation)
+            exit(1)
         
+        #get IP address to send to server
+        ipAddr = getIP()
+        
+        #send IP address to server
+        initConnP.send(ipAddr)
+
+        #receive confirmation that data port was received
+        confirmation = initConnP.recv(3)[0:-1]
+        if (confirmation != "OK"):
+            print "FTCLIENT: ERROR sending or receiving data port\n"
+            print "Confirmation = %s\n" % str(confirmation)
+            exit(1)
 
         #set up the new socket on data port (connection Q)
-        #Create the initial TCP socket object (Connection P)
         clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         #Bind to the port
@@ -173,16 +187,6 @@ if __name__ == "__main__":
         #   bound to the socket on the other end of the connection.
         dataConnQ, addr = clientSocket.accept()
         print "Connected on address %s" % str(addr)
-
-        #send the data port number to server on connection P
-        initConnP.send(dataPort)
-
-        #receive confirmation that data port was received
-        confirmation = initConnP.recv(3)[0:-1]
-        if (confirmation != "OK"):
-            print "FTCLIENT: ERROR sending or receiving data port\n"
-            print "Confirmation = %s\n" % str(confirmation)
-            exit(1)
         
 
         #receive the size of the directory from the server on connection Q
