@@ -164,12 +164,10 @@ if __name__ == "__main__":
         #get IP address to send to server
         ipAddr = getIP()
 
-        print "Check point 1\n"
+        print "ipAddr: %s\n" % ipAddr
         
         #send IP address to server
         initConnP.send(ipAddr)
-
-        print "Check point 2\n"
 
         #receive confirmation that data port was received
         confirmation = initConnP.recv(3)[0:-1]
@@ -188,6 +186,8 @@ if __name__ == "__main__":
 
         #Look at up to 1 request
         clientSocket.listen(1)
+
+        print "Waiting to connect on data socket"
 
         #establish a new socket object usable to send and receive data on the connection and the address
         #   bound to the socket on the other end of the connection.
