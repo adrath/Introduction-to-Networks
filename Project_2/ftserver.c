@@ -441,18 +441,23 @@ int main(int argc, char* argv[]) {
             //get the directory
             int numOfFiles;
             int dirSize = getDir(directoryArray, &numOfFiles);
+            printf("FUCK YOU! 1\n");
 
             //receive the data port number
             recvMessage(establishedConnectionFD, dataPort);
+            printf("FUCK YOU! 2\n");
 
             //send confirmation that data port was recv.
             sendConfirm(establishedConnectionFD);
+            printf("FUCK YOU! 3\n");
 
             //get ip address from client
             recvMessage(establishedConnectionFD, ipAddr);
+            printf("FUCK YOU! 4\n");
 
             //send confirmation that ip address was recv.
             sendConfirm(establishedConnectionFD);
+            printf("FUCK YOU! 5\n");
 
             //establish the data port connection
             int DPSocket;
@@ -460,6 +465,8 @@ int main(int argc, char* argv[]) {
             memset((char*)&clientAddressDP, '\0', sizeof(clientAddressDP));
             clientAddressDP = setUpDataAddress(dataPort, ipAddr);
             DPSocket = createDataSocket(clientAddressDP);
+
+            printf("FUCK YOU! 6\n");
 
             //send size of directory
             int confirm = send(DPSocket, &dirSize, sizeof(dirSize), 0);
