@@ -161,31 +161,31 @@ if __name__ == "__main__":
             print "Confirmation = %s\n" % str(confirmation)
             exit(1)
         
-        #get IP address to send to server
-        ipAddr = getIP()
-        ipAddrSize = len(ipAddr)
+        # #get IP address to send to server
+        # ipAddr = getIP()
+        # ipAddrSize = len(ipAddr)
 
-        print "ipAddrSize: %d" % ipAddrSize
+        # print "ipAddrSize: %d" % ipAddrSize
 
-        initConnP.send(str(ipAddrSize))
-        #receive confirmation that data port was received
-        confirmation = initConnP.recv(3)[0:-1]
-        if (confirmation != "OK"):
-            print "FTCLIENT: ERROR sending or receiving data port\n"
-            print "Confirmation = %s\n" % str(confirmation)
-            exit(1)
+        # initConnP.send(str(ipAddrSize))
+        # #receive confirmation that data port was received
+        # confirmation = initConnP.recv(3)[0:-1]
+        # if (confirmation != "OK"):
+        #     print "FTCLIENT: ERROR sending or receiving data port\n"
+        #     print "Confirmation = %s\n" % str(confirmation)
+        #     exit(1)
 
-        print "ipAddr: %s\n" % ipAddr
+        # print "ipAddr: %s\n" % ipAddr
         
-        #send IP address to server
-        initConnP.send(ipAddr)
+        # #send IP address to server
+        # initConnP.send(ipAddr)
 
-        #receive confirmation that data port was received
-        confirmation = initConnP.recv(3)[0:-1]
-        if (confirmation != "OK"):
-            print "FTCLIENT: ERROR sending or receiving data port\n"
-            print "Confirmation = %s\n" % str(confirmation)
-            exit(1)
+        # #receive confirmation that data port was received
+        # confirmation = initConnP.recv(3)[0:-1]
+        # if (confirmation != "OK"):
+        #     print "FTCLIENT: ERROR sending or receiving data port\n"
+        #     print "Confirmation = %s\n" % str(confirmation)
+        #     exit(1)
         
         print "Check point 3\n"
 
@@ -250,31 +250,31 @@ if __name__ == "__main__":
             print "Confirmation = %s\n" % str(confirmation)
             exit(1)
         
-        #get IP address to send to server
-        ipAddr = getIP()
-        ipAddrSize = len(ipAddr)
+        # #get IP address to send to server
+        # ipAddr = getIP()
+        # ipAddrSize = len(ipAddr)
 
-        print "ipAddrSize: %d" % ipAddrSize
+        # print "ipAddrSize: %d" % ipAddrSize
 
-        initConnP.send(str(ipAddrSize))
-        #receive confirmation that data port was received
-        confirmation = initConnP.recv(3)[0:-1]
-        if (confirmation != "OK"):
-            print "FTCLIENT: ERROR sending or receiving data port\n"
-            print "Confirmation = %s\n" % str(confirmation)
-            exit(1)
+        # initConnP.send(str(ipAddrSize))
+        # #receive confirmation that data port was received
+        # confirmation = initConnP.recv(3)[0:-1]
+        # if (confirmation != "OK"):
+        #     print "FTCLIENT: ERROR sending or receiving data port\n"
+        #     print "Confirmation = %s\n" % str(confirmation)
+        #     exit(1)
 
-        print "ipAddr: %s\n" % ipAddr
+        # print "ipAddr: %s\n" % ipAddr
         
-        #send IP address to server
-        initConnP.send(ipAddr)
+        # #send IP address to server
+        # initConnP.send(ipAddr)
 
-        #receive confirmation that data port was received
-        confirmation = initConnP.recv(3)[0:-1]
-        if (confirmation != "OK"):
-            print "FTCLIENT: ERROR sending or receiving data port\n"
-            print "Confirmation = %s\n" % str(confirmation)
-            exit(1)
+        # #receive confirmation that data port was received
+        # confirmation = initConnP.recv(3)[0:-1]
+        # if (confirmation != "OK"):
+        #     print "FTCLIENT: ERROR sending or receiving data port\n"
+        #     print "Confirmation = %s\n" % str(confirmation)
+        #     exit(1)
         
         print "Check point 3\n"
 
@@ -299,15 +299,15 @@ if __name__ == "__main__":
         fileSize = dataConnQ.recv(7)[0:-1]
 
         #determine if the message from the client is blank
-        if dirSize == "":
+        if fileSize == "" or fileSize == "0":
             print "Connection has ended, exiting chat with %s" % clientUsername
-            print "dirSize = %d\n" % int(dirSize)
+            print "fileSize = %d\n" % int(fileSize)
             exit(1)
 
         #receive the file contents from the server on connection Q
         x = 0
         fileContents = ""
-        while (x < dirSize):
+        while (x < fileSize):
             fileFromServer = dataConnQ.recv(dirSize)[0:-1]
             x += len(fileFromServer)
             fileContents += fileFromServer
@@ -315,6 +315,7 @@ if __name__ == "__main__":
         #place file contents from the server into a file
 
         #print successfully placed into file
+        print "transfer complete"
 
     
     #close connection Q, then close connection P
