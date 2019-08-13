@@ -419,6 +419,7 @@ int main(int argc, char* argv[]) {
         char dataPort[10];
         char sizeConfirm[10];
         char ipAddr[100];
+        char ipSize[10]
 
         //Wait to accept connection
         int sizeOfClientInfo = sizeof(clientAddress); // Get the size of the address for the client that will connect
@@ -449,7 +450,28 @@ int main(int argc, char* argv[]) {
             sendConfirm(establishedConnectionFD);
 
             //get ip address from client
+            recvMessage(establishedConnectionFD, ipSize);
+            int sizeOfIP = atoi(ipSize);
+            printf("ipSize: %d\n", sizeOfIP);
+
+            //send confirmation that ip address was recv.
+            sendConfirm(establishedConnectionFD);
+
+            //get ip address from client
             recvMessage(establishedConnectionFD, ipAddr);
+
+            int check = 0;
+            while (check < sizeOfIP){
+                check += recv(socketFD, ipAddr, sizeof(ipAddr) - 1, 0);
+                if (check < 0){
+                    perror("FTSERVER: Error receiving message from ftclient\n");
+                    exit(1);
+                }
+                else if (check == 0){
+                    printf("The connection has been closed by the ftclient\n");
+                }
+            }
+
             printf("dataPort: %s\n", ipAddr);
 
             //send confirmation that ip address was recv.
