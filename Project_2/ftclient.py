@@ -165,13 +165,12 @@ if __name__ == "__main__":
         ipAddr = getIP()
         ipAddrSize = len(ipAddr)
 
+        print "ipAddrSize: %d" % ipAddrSize
+
         print "ipAddr: %s\n" % ipAddr
         
         #send IP address to server
-        x = 0
-        while(x < ipAddrSize):
-            y = initConnP.send(ipAddr)
-            x += y
+        initConnP.send(ipAddr)
 
         #receive confirmation that data port was received
         confirmation = initConnP.recv(3)[0:-1]
