@@ -411,6 +411,7 @@ int main(int argc, char* argv[]) {
         char command[10];
         char dataPort[10];
         char sizeConfirm[10];
+        char dirConfirm[10];
         char ipAddr[100];
         char ipSize[10];
 
@@ -466,7 +467,7 @@ int main(int argc, char* argv[]) {
             }
 
             //receive ack that the client got the directory
-            recvMessage(DPSocket);
+            recvMessage(DPSocket, dirConfirm);
 
             //close the data port connection
             close(DPSocket);
