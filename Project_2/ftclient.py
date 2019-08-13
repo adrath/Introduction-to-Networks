@@ -229,20 +229,88 @@ if __name__ == "__main__":
 
 
     #if getting a file from the server
-    #elif (commandID == "g"):
+    elif (commandID == "g"):
         #send commandID of "g" to the server
+        initConnP.send("g")
 
         #wait for ack that received the request for the filename
-
-        #set up the new socket on data port (connection Q)
+        confirmation = initConnP.recv(3)[0:-1]
+        if (confirmation != "OK"):
+            print "FTCLIENT: ERROR sending or receiving command\n"
+            print "Confirmation = %s\n" % str(confirmation)
+            exit(1)
 
         #send the data port number to server on connection P
+        initConnP.send(str(dataPort))
 
         #receive confirmation that data port was received
+        confirmation = initConnP.recv(3)[0:-1]
+        if (confirmation != "OK"):
+            print "FTCLIENT: ERROR sending or receiving data port\n"
+            print "Confirmation = %s\n" % str(confirmation)
+            exit(1)
+        
+        #get IP address to send to server
+        ipAddr = getIP()
+        ipAddrSize = len(ipAddr)
+
+        print "ipAddrSize: %d" % ipAddrSize
+
+        initConnP.send(str(ipAddrSize))
+        #receive confirmation that data port was received
+        confirmation = initConnP.recv(3)[0:-1]
+        if (confirmation != "OK"):
+            print "FTCLIENT: ERROR sending or receiving data port\n"
+            print "Confirmation = %s\n" % str(confirmation)
+            exit(1)
+
+        print "ipAddr: %s\n" % ipAddr
+        
+        #send IP address to server
+        initConnP.send(ipAddr)
+
+        #receive confirmation that data port was received
+        confirmation = initConnP.recv(3)[0:-1]
+        if (confirmation != "OK"):
+            print "FTCLIENT: ERROR sending or receiving data port\n"
+            print "Confirmation = %s\n" % str(confirmation)
+            exit(1)
+        
+        print "Check point 3\n"
+
+        #set up the new socket on data port (connection Q)
+        clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        #Bind to the port
+        clientSocket.bind(('',int(dataPort)))
+
+        #Look at up to 1 request
+        clientSocket.listen(1)
+
+        print "Waiting to connect on data socket"
+
+        #establish a new socket object usable to send and receive data on the connection and the address
+        #   bound to the socket on the other end of the connection.
+        dataConnQ, addr = clientSocket.accept()
+        print "Connected on address %s" % str(addr)
+        
 
         #receive the size of the directory from the server on connection Q
+        fileSize = dataConnQ.recv(7)[0:-1]
+
+        #determine if the message from the client is blank
+        if dirSize == "":
+            print "Connection has ended, exiting chat with %s" % clientUsername
+            print "dirSize = %d\n" % int(dirSize)
+            exit(1)
 
         #receive the file contents from the server on connection Q
+        x = 0
+        fileContents = ""
+        while (x < dirSize):
+            fileFromServer = dataConnQ.recv(dirSize)[0:-1]
+            x += len(fileFromServer)
+            fileContents += fileFromServer
 
         #place file contents from the server into a file
 
@@ -262,4 +330,6 @@ https://www.geeksforgeeks.org/socket-programming-python/
 https://stackoverflow.com/questions/24872125/socket-import-does-not-work-from-does-whats-the-deal
 https://stackoverflow.com/questions/15869158/python-socket-listening
 https://www.bogotobogo.com/python/python_network_programming_server_client.php
+https://www.pythonforbeginners.com/files/reading-and-writing-files-in-python
+https://www.geeksforgeeks.org/python-program-find-ip-address/
 '''
