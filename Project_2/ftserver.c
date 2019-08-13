@@ -69,7 +69,7 @@
 *   was taken from CS344 examples given by Benjamin Brewster. Specifically it came
 *   from client.c file provided in Block 4 of CS344 course. Also taken from my
 *   CS344 Project 4 - OTP. Please ask for my code if you would like to reference it.
-* Input: argv[1] (portNumber), argv[2] (hostname)
+* Input: argv[1] (portNumber)
 * Output: struct sockaddr_in serverAddress
 ******************************************************************************/
 struct sockaddr_in setUpAddress(char* pn){
@@ -91,6 +91,34 @@ struct sockaddr_in setUpAddress(char* pn){
 }
 
 /******************************************************************************
+* Function: struct sockaddr_in setUpDataAddress(char* pn, char* user)
+* Description: set up the server address structure. A lot of the socket set up
+*   was taken from CS344 examples given by Benjamin Brewster. Specifically it came
+*   from client.c file provided in Block 4 of CS344 course. Also taken from my
+*   CS344 Project 4 - OTP. Please ask for my code if you would like to reference it.
+* Input: portNumber, ipAddr
+* Output: struct sockaddr_in serverAddress
+******************************************************************************/
+struct sockaddr_in setUpDataAddress(char* pn, char* ipAddr){
+    int portNumber;
+    int listenSocketFD;
+    struct sockaddr_in serverAddress;
+
+    //Initialize the address structure by clearing it out
+    memset((char*)&serverAddress, '\0', sizeof(serverAddress));
+    
+    //Taken from CS344 client.c file provided by Benjamin Brewster in Block 4 of course
+    portNumber = atoi(pn); // Get the port number, convert to an integer from a string
+	serverAddress.sin_family = AF_INET; // Create a network-capable socket
+	serverAddress.sin_port = htons(portNumber); // Store the port number
+    inet_aton(ipAddr, &serverAddress,sin_addr.s_addr);
+
+    //return the address to main
+    return serverAddress;
+}
+
+
+/******************************************************************************
 * Function: int createSocket(struct sockaddr_in serverAddress)
 * Description: set up the socket and double check that the socket created actually
 *   connected to the server. Establish the connection as well.
@@ -104,12 +132,6 @@ int createSocket(struct sockaddr_in serverAddress){
         perror("FTSERVER: Error opening socket\n");
         exit(1);
     }
-
-    // //connect to server
-    // if (connect(socketFD, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) < 0){
-    //     perror("FTSERVER: Error connecting to server\n");
-    //     exit(1);
-    // }
 
     // Use SO_REUSEADDR to Indicates that the rules used in validating addresses supplied in a bind() call should allow reuse of local addresses.
 	int enable = 1;
@@ -126,6 +148,22 @@ int createSocket(struct sockaddr_in serverAddress){
     }
 
     return socketFD;
+}
+
+
+int createDataSocket(struct sockaddr_in serverAddress){
+    //create the socket
+    int socketFD = socket(AF_INET, SOCK_STREAM, 0);
+    if (socketFD < 0){
+        perror("FTSERVER: Error opening socket\n");
+        exit(1);
+    }
+
+    //connect to server
+    if (connect(socketFD, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) < 0){
+        perror("FTSERVER: Error connecting to server\n");
+        exit(1);
+    }
 }
 
 /*******************************************************************************
@@ -379,6 +417,7 @@ int main(int argc, char* argv[]) {
         char command[10];
         char dataPort[10];
         char sizeConfirm[10];
+        char ipAddr[100];
 
         //Wait to accept connection
         int sizeOfClientInfo = sizeof(clientAddress); // Get the size of the address for the client that will connect
@@ -407,12 +446,18 @@ int main(int argc, char* argv[]) {
             //send confirmation that data port was recv.
             sendConfirm(establishedConnectionFD);
 
+            //get ip address from client
+            recvMessage(establishedConnectionFD, ipAddr);
+
+            //send confirmation that ip address was recv.
+            sendConfirm(establishedConnectionFD);
+
             //establish the data port connection
             int DPSocket;
             struct sockaddr_in clientAddressDP;
             memset((char*)&clientAddressDP, '\0', sizeof(clientAddressDP));
-            clientAddressDP = setUpAddress(dataPort);
-            DPSocket = createSocket(clientAddressDP);
+            clientAddressDP = setUpDataAddress(dataPort, ipAddr);
+            DPSocket = createDataSocket(clientAddressDP);
 
             //send size of directory
             int confirm = send(DPSocket, &dirSize, sizeof(dirSize), 0);
@@ -444,6 +489,12 @@ int main(int argc, char* argv[]) {
             //send confirmation that recv dataPort
             sendConfirm(establishedConnectionFD);
 
+            //get ip address from client
+            recvMessage(establishedConnectionFD, ipAddr);
+
+            //send confirmation that ip address was recv.
+            sendConfirm(establishedConnectionFD);
+
             //receive fileName
             char fileName[MAX_SIZE];
             memset(fileName, '\0', sizeof(fileName));
@@ -454,8 +505,8 @@ int main(int argc, char* argv[]) {
             int DPSocket;
             struct sockaddr_in clientAddressDP;
             memset((char*)&clientAddressDP, '\0', sizeof(clientAddressDP));
-            clientAddressDP = setUpAddress(dataPort);
-            DPSocket = createSocket(clientAddressDP);
+            clientAddressDP = setUpDataAddress(dataPort, ipAddr);
+            DPSocket = createDataSocket(clientAddressDP);
 
             //check to see if the file exits (send an ack saying if the file exists or not)
             int fileSize = getFileSize(fileName);
