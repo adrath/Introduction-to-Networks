@@ -142,7 +142,7 @@ if __name__ == "__main__":
     #If getting the directory from the server
     if (commandID == "l"):
         #send commandID of "l" to the server
-        initConnP.send(commandID)
+        initConnP.send("l")
 
         #wait for ack that received the request for the directory
         confirmation = initConnP.recv(3)[0:-1]
@@ -163,9 +163,13 @@ if __name__ == "__main__":
         
         #get IP address to send to server
         ipAddr = getIP()
+
+        print "Check point 1\n"
         
         #send IP address to server
         initConnP.send(ipAddr)
+
+        print "Check point 2\n"
 
         #receive confirmation that data port was received
         confirmation = initConnP.recv(3)[0:-1]
@@ -173,6 +177,8 @@ if __name__ == "__main__":
             print "FTCLIENT: ERROR sending or receiving data port\n"
             print "Confirmation = %s\n" % str(confirmation)
             exit(1)
+        
+        print "Check point 3\n"
 
         #set up the new socket on data port (connection Q)
         clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
