@@ -91,34 +91,6 @@ struct sockaddr_in setUpAddress(char* pn){
 }
 
 /******************************************************************************
-* Function: struct sockaddr_in setUpDataAddress(char* pn, char* user)
-* Description: set up the server address structure. A lot of the socket set up
-*   was taken from CS344 examples given by Benjamin Brewster. Specifically it came
-*   from client.c file provided in Block 4 of CS344 course. Also taken from my
-*   CS344 Project 4 - OTP. Please ask for my code if you would like to reference it.
-* Input: portNumber, ipAddr
-* Output: struct sockaddr_in serverAddress
-******************************************************************************/
-struct sockaddr_in setUpDataAddress(char* pn, char* ipAddr){
-    int portNumber;
-    int listenSocketFD;
-    struct sockaddr_in serverAddress;
-
-    //Initialize the address structure by clearing it out
-    memset((char*)&serverAddress, '\0', sizeof(serverAddress));
-    
-    //Taken from CS344 client.c file provided by Benjamin Brewster in Block 4 of course
-    portNumber = atoi(pn); // Get the port number, convert to an integer from a string
-	serverAddress.sin_family = AF_INET; // Create a network-capable socket
-	serverAddress.sin_port = htons(portNumber); // Store the port number
-    serverAddress.sin_addr.s_addr = inet_addr(ipAddr);
-
-    //return the address to main
-    return serverAddress;
-}
-
-
-/******************************************************************************
 * Function: int createSocket(struct sockaddr_in serverAddress)
 * Description: set up the socket and double check that the socket created actually
 *   connected to the server. Establish the connection as well.
@@ -151,21 +123,42 @@ int createSocket(struct sockaddr_in serverAddress){
 }
 
 
-int createDataSocket(struct sockaddr_in serverAddress){
-    //create the socket
-    int socketFD = socket(AF_INET, SOCK_STREAM, 0);
-    if (socketFD < 0){
-        perror("FTSERVER: Error opening socket\n");
-        exit(1);
+int createDataSocket(int establishedConnectionFD, int dataPort){
+    struct sockaddr_storage addr;
+    char ipstr[15];
+    
+    //We need to pull the IP address of the client, so we will use getpeername
+    socklen_t len = sizeof(addr);
+    getpeername(establishedConnectionFD, (struct sockaddr*)&addr, &len);
+    // deal with both IPv4 and IPv6:
+    if (addr.ss_family == AF_INET) {
+        printf("AF_INET\n");
+        struct sockaddr_in s = (struct sockaddr_in )&addr;
+        inet_ntop(AF_INET, &s->sin_addr, ipstr, sizeof ipstr);
+    } else { // AF_INET6
+        printf("AF_INET6");
+        struct sockaddr_in6 s = (struct sockaddr_in6 )&addr;
+        inet_ntop(AF_INET6, &s->sin6_addr, ipstr, sizeof ipstr);
+    }
+    printf("Peer IP address: %s\n", ipstr);
+    printf("Peer port      : %s\n", dataPort);
+    struct addrinfo hints, *res;
+    int dataSocketFD;
+    // first, load up address structs with getaddrinfo():
+    memset(&hints, 0, sizeof hints);
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_STREAM;
+    struct sockaddr_in s = (struct sockaddr_in )&addr;
+    getaddrinfo(ipstr, dataPort, &hints, &res);
+    dataSocketFD = socket(AF_INET, SOCK_STREAM, 0);
+    if (dataSocketFD < 0) {
+        error("Error opening data socket from server");
+    }
+    if (connect(dataSocketFD, res->ai_addr, res->ai_addrlen) < 0) {
+        error("Error connecting to data socket from server");
     }
 
-    //connect to server
-    if (connect(socketFD, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) < 0){
-        perror("FTSERVER: Error connecting to server\n");
-        exit(1);
-    }
-
-    return socketFD;
+    return dataSocketFD;
 }
 
 /*******************************************************************************
@@ -420,6 +413,7 @@ int main(int argc, char* argv[]) {
         char sizeConfirm[10];
         char ipAddr[100];
         char ipSize[10];
+        int dp;
 
         //Wait to accept connection
         int sizeOfClientInfo = sizeof(clientAddress); // Get the size of the address for the client that will connect
@@ -446,32 +440,12 @@ int main(int argc, char* argv[]) {
             recvMessage(establishedConnectionFD, dataPort);
             printf("dataPort: %s\n", dataPort);
 
+            //Convert dataPort into an integer
+            dp = atoi(dataPort);
+
+
             //send confirmation that data port was recv.
             sendConfirm(establishedConnectionFD);
-
-            //get ip address from client
-            recvMessage(establishedConnectionFD, ipSize);
-            int sizeOfIP = atoi(ipSize);
-            printf("ipSize: %d\n", sizeOfIP);
-
-            //send confirmation that ip address was recv.
-            sendConfirm(establishedConnectionFD);
-
-            //get ip address from client
-            //recvMessage(establishedConnectionFD, ipAddr);
-
-            int check = 0;
-            while (check < sizeOfIP){
-                int check2 = recv(establishedConnectionFD, ipAddr, sizeof(ipAddr) - 1, 0);
-                if (check2 < 0){
-                    perror("FTSERVER: Error receiving message from ftclient\n");
-                    exit(1);
-                }
-                else if (check2 == 0){
-                    printf("The connection has been closed by the ftclient\n");
-                }
-                check += check2;
-            }
 
             printf("dataPort: %s\n", ipAddr);
 
@@ -479,13 +453,7 @@ int main(int argc, char* argv[]) {
             sendConfirm(establishedConnectionFD);
 
             //establish the data port connection
-            int DPSocket;
-            struct sockaddr_in clientAddressDP;
-            memset((char*)&clientAddressDP, '\0', sizeof(clientAddressDP));
-            printf("connection? 1\n");fflush(stdout);
-            clientAddressDP = setUpDataAddress(dataPort, ipAddr);
-            printf("connection? 2\n");fflush(stdout);
-            DPSocket = createDataSocket(clientAddressDP);
+            int DPSocket = createDataSocket(establishedConnectionFD, dp);
 
             printf("connection!\n");fflush(stdout);
 
