@@ -193,7 +193,7 @@ if __name__ == "__main__":
         clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         #Bind to the port
-        clientSocket.bind(('',int(serverPort)))
+        clientSocket.bind(('',int(dataPort)))
 
         #Look at up to 1 request
         clientSocket.listen(1)
