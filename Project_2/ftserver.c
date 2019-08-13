@@ -111,7 +111,7 @@ struct sockaddr_in setUpDataAddress(char* pn, char* ipAddr){
     portNumber = atoi(pn); // Get the port number, convert to an integer from a string
 	serverAddress.sin_family = AF_INET; // Create a network-capable socket
 	serverAddress.sin_port = htons(portNumber); // Store the port number
-    serverAddress.sin_addr.s_addr = inet_aton(ipAddr);
+    serverAddress.sin_addr.s_addr = inet_addr(ipAddr);
 
     //return the address to main
     return serverAddress;
