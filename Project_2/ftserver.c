@@ -456,7 +456,7 @@ int main(int argc, char* argv[]) {
             }
             
             //Confirm the size of the directory was recv by client
-            recvMessage(establishedConnectionFD, sizeConfirm);
+            recvMessage(DPSocket, sizeConfirm);
 
             //send the directory
             int i = 0;
@@ -466,7 +466,7 @@ int main(int argc, char* argv[]) {
             }
 
             //receive ack that the client got the directory
-            sendConfirm(establishedConnectionFD);
+            recvMessage(DPSocket);
 
             //close the data port connection
             close(DPSocket);
@@ -547,4 +547,9 @@ int main(int argc, char* argv[]) {
 *
 * //Getting a file size
 * https://stackoverflow.com/questions/238603/how-can-i-get-a-files-size-in-c
+*
+* //getting the client's IP address using getpeername
+* Code was supplied by instructor (William Pfeil), used 
+*   https://beej.us/guide/bgnet/html/multi/getpeernameman.html to supplement
+*   information.
 ******************************************************************************/
