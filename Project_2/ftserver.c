@@ -470,7 +470,7 @@ int main(int argc, char* argv[]) {
                 else if (check == 0){
                     printf("The connection has been closed by the ftclient\n");
                 }
-                check += check2
+                check += check2;
             }
 
             printf("dataPort: %s\n", ipAddr);
