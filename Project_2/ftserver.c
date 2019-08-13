@@ -133,11 +133,11 @@ int createDataSocket(int establishedConnectionFD, int dataPort){
     // deal with both IPv4 and IPv6:
     if (addr.ss_family == AF_INET) {
         printf("AF_INET\n");
-        struct sockaddr_in s = (struct sockaddr_in )&addr;
+        struct sockaddr_in *s = (struct sockaddr_in *)&addr;
         inet_ntop(AF_INET, &s->sin_addr, ipstr, sizeof ipstr);
     } else { // AF_INET6
         printf("AF_INET6");
-        struct sockaddr_in6 s = (struct sockaddr_in6 )&addr;
+        struct sockaddr_in6 *s = (struct sockaddr_in6 *)&addr;
         inet_ntop(AF_INET6, &s->sin6_addr, ipstr, sizeof ipstr);
     }
     printf("Peer IP address: %s\n", ipstr);
@@ -148,7 +148,7 @@ int createDataSocket(int establishedConnectionFD, int dataPort){
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
-    struct sockaddr_in s = (struct sockaddr_in )&addr;
+    struct sockaddr_in s = (struct sockaddr_in *)&addr;
     getaddrinfo(ipstr, dataPort, &hints, &res);
     dataSocketFD = socket(AF_INET, SOCK_STREAM, 0);
     if (dataSocketFD < 0) {
