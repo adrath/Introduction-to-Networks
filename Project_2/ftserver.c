@@ -411,7 +411,6 @@ int main(int argc, char* argv[]) {
 
     //create the socket and establish a connection to client
     socketFD = createSocket(serverAddress);
-    printf("seriously?\n");fflush(stdout);
     
     //Keep this socket up and running until ended with a SIGINT call.
     while(1){
@@ -421,8 +420,6 @@ int main(int argc, char* argv[]) {
         char sizeConfirm[10];
         char ipAddr[100];
 
-        printf("seriously part 2\n");fflush(stdout);
-
         //Wait to accept connection
         int sizeOfClientInfo = sizeof(clientAddress); // Get the size of the address for the client that will connect
 		int establishedConnectionFD = accept(socketFD, (struct sockaddr *)&clientAddress, &sizeOfClientInfo); // Accept
@@ -430,13 +427,9 @@ int main(int argc, char* argv[]) {
 			fprintf(stderr, "ERROR on accept\n"); fflush(stdout);
 		}
 
-        printf("seriously part 3\n");fflush(stdout);
-
         //receive command request
         recvMessage(establishedConnectionFD, command);
         sendConfirm(establishedConnectionFD);
-
-        printf("command: %s\n", command);fflush(stdout);
 
         //determine what request to perform
         if (strstr(command, "l") != NULL){
@@ -447,32 +440,29 @@ int main(int argc, char* argv[]) {
             //get the directory
             int numOfFiles;
             int dirSize = getDir(directoryArray, &numOfFiles);
-            printf("FUCK YOU! 1\n");fflush(stdout);
 
             //receive the data port number
             recvMessage(establishedConnectionFD, dataPort);
-            printf("FUCK YOU! 2\n");fflush(stdout);
 
             //send confirmation that data port was recv.
             sendConfirm(establishedConnectionFD);
-            printf("FUCK YOU! 3\n");fflush(stdout);
 
             //get ip address from client
             recvMessage(establishedConnectionFD, ipAddr);
-            printf("FUCK YOU! 4\n");fflush(stdout);
 
             //send confirmation that ip address was recv.
             sendConfirm(establishedConnectionFD);
-            printf("FUCK YOU! 5\n");fflush(stdout);
 
             //establish the data port connection
             int DPSocket;
             struct sockaddr_in clientAddressDP;
             memset((char*)&clientAddressDP, '\0', sizeof(clientAddressDP));
+            printf("connection? 1\n");fflush(stdout);
             clientAddressDP = setUpDataAddress(dataPort, ipAddr);
+            printf("connection? 2\n");fflush(stdout);
             DPSocket = createDataSocket(clientAddressDP);
 
-            printf("FUCK YOU! 6\n");fflush(stdout);
+            printf("connection!\n");fflush(stdout);
 
             //send size of directory
             int confirm = send(DPSocket, &dirSize, sizeof(dirSize), 0);
