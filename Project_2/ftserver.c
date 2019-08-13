@@ -436,7 +436,7 @@ int main(int argc, char* argv[]) {
         recvMessage(establishedConnectionFD, command);
         sendConfirm(establishedConnectionFD);
 
-        printf("seriously part 4\n");fflush(stdout);
+        printf("command: %s\n", command);fflush(stdout);
 
         //determine what request to perform
         if (strstr(command, "l") == NULL){
