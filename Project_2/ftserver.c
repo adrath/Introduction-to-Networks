@@ -463,11 +463,11 @@ int main(int argc, char* argv[]) {
             int check = 0;
             while (check < sizeOfIP){
                 int check2 = recv(establishedConnectionFD, ipAddr, sizeof(ipAddr) - 1, 0);
-                if (check < 0){
+                if (check2 < 0){
                     perror("FTSERVER: Error receiving message from ftclient\n");
                     exit(1);
                 }
-                else if (check == 0){
+                else if (check2 == 0){
                     printf("The connection has been closed by the ftclient\n");
                 }
                 check += check2;
