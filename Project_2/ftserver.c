@@ -419,7 +419,7 @@ int main(int argc, char* argv[]) {
         char dataPort[10];
         char sizeConfirm[10];
         char ipAddr[100];
-        char ipSize[10]
+        char ipSize[10];
 
         //Wait to accept connection
         int sizeOfClientInfo = sizeof(clientAddress); // Get the size of the address for the client that will connect
