@@ -148,7 +148,7 @@ int createDataSocket(int establishedConnectionFD, int dataPort){
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
-    struct sockaddr_in s = (struct sockaddr_in *)&addr;
+    struct sockaddr_in *s = (struct sockaddr_in *)&addr;
     getaddrinfo(ipstr, dataPort, &hints, &res);
     dataSocketFD = socket(AF_INET, SOCK_STREAM, 0);
     if (dataSocketFD < 0) {
@@ -487,12 +487,6 @@ int main(int argc, char* argv[]) {
             //send confirmation that recv dataPort
             sendConfirm(establishedConnectionFD);
 
-            //get ip address from client
-            recvMessage(establishedConnectionFD, ipAddr);
-
-            //send confirmation that ip address was recv.
-            sendConfirm(establishedConnectionFD);
-
             //receive fileName
             char fileName[MAX_SIZE];
             memset(fileName, '\0', sizeof(fileName));
@@ -500,11 +494,7 @@ int main(int argc, char* argv[]) {
             sendConfirm(establishedConnectionFD);
 
             //establish the data port connection
-            int DPSocket;
-            struct sockaddr_in clientAddressDP;
-            memset((char*)&clientAddressDP, '\0', sizeof(clientAddressDP));
-            clientAddressDP = setUpDataAddress(dataPort, ipAddr);
-            DPSocket = createDataSocket(clientAddressDP);
+            int DPSocket = createDataSocket(establishedConnectionFD, dp);
 
             //check to see if the file exits (send an ack saying if the file exists or not)
             int fileSize = getFileSize(fileName);
