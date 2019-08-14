@@ -203,10 +203,10 @@ if __name__ == "__main__":
         while (1):
             dirFromServer = dataConnQ.recv(4096)[0:-1]
             dirFromServer = dirFromServer.decode()
-            if dirFromServer != "@@":
-                print "%s" % dirFromServer
+            if "@@" in dirFromServer:
+                break
             else:
-                break;
+                print "%s" % dirFromServer
 
         #send confirmation that the directory was received
         dataConnQ.send("OK")
