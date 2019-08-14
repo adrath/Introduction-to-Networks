@@ -480,11 +480,13 @@ int main(int argc, char* argv[]) {
             char *a = "@@";
             int confirm = send(socketFD, a, sizeof(a), 0);
             if (confirm < 0){
-                fprintf(stderr, "FTSERVER: Error sending the directory size"); exit(1);
+                fprintf(stderr, "FTSERVER: Error sending @@"); exit(1);
             }
 
             //receive ack that the client got the directory
             recvMessage(DPSocket, dirConfirm);
+
+            sleep(1);
 
             //close the data port connection
             close(DPSocket);
