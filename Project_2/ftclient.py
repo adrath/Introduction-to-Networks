@@ -208,8 +208,7 @@ if __name__ == "__main__":
 
         #place file contents from the server into a file
         if "Error: File Not Found or Do Not Have Permission To Send" not in newFileContents:
-            newFile = fileName + "_copy"
-            f = open(newFile, "w")
+            f = open(fileName, "w")
             f.write(newFileContents)
             f.close()
             
