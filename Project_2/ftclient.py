@@ -202,7 +202,7 @@ if __name__ == "__main__":
         print "ds = %d" % ds
         while (x < dirSize):
             dirFromServer = dataConnQ.recv(4096)[0:-1]
-            x++
+            x += 1
             print "%s" % dirFromServer
 
         #send confirmation that the directory was received
