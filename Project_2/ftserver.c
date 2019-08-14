@@ -123,82 +123,42 @@ int createSocket(struct sockaddr_in serverAddress){
     return socketFD;
 }
 
-
-int createDataSocket(int establishedConnectionFD, char* dataPort){
-    struct sockaddr_storage addr;
-    char ipstr[15];
-    
-    //We need to pull the IP address of the client, so we will use getpeername
-    socklen_t len = sizeof(addr);
-    getpeername(establishedConnectionFD, (struct sockaddr*)&addr, &len);
-    
-    // deal with both IPv4 and IPv6:
-    if (addr.ss_family == AF_INET) {
-        printf("AF_INET\n");
-        struct sockaddr_in *s = (struct sockaddr_in *)&addr;
-        inet_ntop(AF_INET, &s->sin_addr, ipstr, sizeof ipstr);
-    } else { // AF_INET6
-        printf("AF_INET6");
-        struct sockaddr_in6 *s = (struct sockaddr_in6 *)&addr;
-        inet_ntop(AF_INET6, &s->sin6_addr, ipstr, sizeof ipstr);
-    }
-    
-    printf("Peer IP address: %s\n", ipstr);
-    printf("Peer port      : %s\n", dataPort);
-    
+struct addrinfo* createDataAddress(char* ipAddr, char* dataPort){
     struct addrinfo hints, *res;
     
     // first, load up address structs with getaddrinfo():
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
-    int flag = getaddrinfo(ipstr, dataPort, &hints, &res);
+    int flag = getaddrinfo(ipAddr, dataPort, &hints, &res);
 
     if (flag != 0){
         fprintf(stderr,"Error with creating IP addresss\n");exit(1);
     }
 
-    int dataSocketFD = socket(res->ai_family, res->ai_socktype, flag);
-    if (dataSocketFD < 0){
-        fprintf(stderr,"Error opening data socket from server!!!!\n");exit(1);
-    }
-
-    if (connect(dataSocketFD, res->ai_addr, res->ai_addrlen) < 0) {
-        fprintf(stderr,"Error opening data socket from server\n");
-        close(dataSocketFD);
-        exit(1);
-
-    }
-
-    return dataSocketFD;
+    return res;
 }
 
-/*******************************************************************************
-* Function: int bindAndListen(int socketFD)
-* Description: this function will be responsible for initializing the bind() and
-*   listen() function necessary for the server to listen for the connection from
-*   the client. This function will return the socketFD.
-* Input: int socketFD
-* Output: int socketFD
-*******************************************************************************/
-// int bindAndListen(int socketFD){
-//     // Use SO_REUSEADDR to Indicates that the rules used in validating addresses supplied in a bind() call should allow reuse of local addresses.
-// 	int enable = 1;
-// 	setsockopt(socketFD, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int));
+int createDataSocket(struct addrinfo * res){
+	int dataSocketFD;
+	
+	//returning socket file
+	if ((dataSocketFD = socket((struct addrinfo *)(res)->ai_family, res->ai_socktype, res->ai_protocol)) == -1){
+		fprintf(stderr, "ERROR! Cannot create socket\n");
+		exit(1);
+	}
+	return dataSocketFD;
+}
 
-//     // Enable the socket to begin listening
-// 	if (bind(socketFD, (struct sockaddr *)&serverAddress, sizeof(serverAddress)) < 0) { // Connect socket to port
-// 		fprintf(stderr, "ERROR on binding\n");
-//         exit(1);
-// 	}
-// 	if(listen(socketFD, 5)< 0){ // Flip the socket on - it can now receive up to 5 connections
-//         fprintf(stderr, "ERROR in listening\n");
-//         exit(1);
-//     }
-
-//     return socketFD;
-// }
-
+void connect_socket(int dataSocketFD, struct addrinfo * res){
+	int status;
+	
+	//connects the address infrom from the linked list
+	if ((status = connect(dataSocketFD, res->ai_addr, res->ai_addrlen)) == -1){
+		fprintf(stderr, "ERROR! Cannot connect socket\n"); //error message
+		exit(1);
+	}
+}
 
 /*******************************************************************************
 * Function: int recvMessage(int socketFD)
@@ -455,7 +415,12 @@ int main(int argc, char* argv[]) {
             //send confirmation that data port was recv.
             sendConfirm(establishedConnectionFD);
 
-            printf("dataPort: %s\n", ipAddr);
+            printf("dataPort: %s\n", dataPort);
+
+            recvMessage(establishedConnectionFD, ipAddr);
+            printf("ipAddr: %s\n", ipAddr);
+
+            sendConfirm(establishedConnectionFD);
 
             //establish the data port connection
             int DPSocket = createDataSocket(establishedConnectionFD, dataPort);
