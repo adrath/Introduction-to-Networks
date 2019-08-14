@@ -419,7 +419,8 @@ int main(int argc, char* argv[]) {
 
             printf("dataPort: %s\n", dataPort);
 
-            recvMessage(establishedConnectionFD, ipAddr);
+            memset(ipAddr, 0, sizeof(IPAdd));
+            recv(establishedConnectionFD, ipAddr, sizeof(ipAddr) - 1, 0);
             printf("ipAddr: %s\n", ipAddr);
 
             sendConfirm(establishedConnectionFD);
