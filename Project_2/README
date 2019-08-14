@@ -1,0 +1,11 @@
+Tested on Flip 2 and Flip 3.
+To get the directory input:
+  server: ./ftserver [port] (ex. ./ftserver 9953)
+  client: python ftclient.py [server host] [server port] -l [data port] (ex. python ftclient.py flip3 9953 -l 9954)
+  
+To get the file_copy:
+  server: ./ftserver [port] (ex. ./ftserver 9953)
+  client: python ftclient.py [server host] [server port] -g [filename] [data port] (ex. python ftclient.py flip3 9953 -g smalltext.txt 9954)
+  
+server host will be the host of the server (ex. flip3)
+server port and data port must be between 1024-65535
