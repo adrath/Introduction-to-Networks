@@ -194,7 +194,7 @@ if __name__ == "__main__":
         #    exit(1)
 
         #confirm that the size of the directory was recv
-        #dataConnQ.send("OK")
+        dataConnQ.send("OK")
 
         #receive the directory from the server on connection Q
         #x = 0
