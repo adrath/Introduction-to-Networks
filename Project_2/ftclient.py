@@ -185,7 +185,7 @@ if __name__ == "__main__":
         
 
         #receive the size of the directory from the server on connection Q
-        dirSize = dataConnQ.recv(6)[0:-1]
+        dirSize = dataConnQ.recv(4)
         print "dirSize = %s" % dirSize
         
         #determine if the message from the client is blank
@@ -200,6 +200,7 @@ if __name__ == "__main__":
         #receive the directory from the server on connection Q
         x = 0
         ds = int(dirSize)
+        print "ds = %d" % ds
         while (x < ds):
             dirFromServer = dataConnQ.recv(ds)[0:-1]
             x += len(dirFromServer)
