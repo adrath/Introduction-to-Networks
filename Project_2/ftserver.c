@@ -336,8 +336,8 @@ int getFileSize(char* fileName){
 *   between the server and the client to send the file on.
 *******************************************************************************/
 int sendFile(int socketFD, char* fileName, int fileSize){
-    if (fileSize < 0){
-        char noFile[] = "Error: File Not Found or Do Not Have Permission To Send\n";
+    if (fileSize <= 0){
+        char noFile[] = "Error: File Not Found or Do Not Have Permission To Send _@_@_\n";
         int check = send(socketFD, noFile, sizeof(noFile), 0);
         if (check < 0){
             perror("FTSERVER: Error sending file to ftclient\n");
@@ -350,24 +350,42 @@ int sendFile(int socketFD, char* fileName, int fileSize){
     }
     else {
         //Declare variables
-        char sendBuffer[100];
+        char sendBuffer[60000];
+        memset(sendBuffer, '\0', sizeof(sendBuffer));
+
         int x;
-        FILE* fptr = fopen(fileName, "r");
+        int fd = open(fileName, O_RDONLY);
     
-        //Check to see if the file exist or fails to open
-        if (fptr == NULL){
-            printf("getFileSize: Unable to open file\n");
-            return -1;
+        while (1)
+        {
+            int bytes = read(fd, sendBuffer, sizeof(sendBuffer) - 1);
+
+            //no bytes read
+            if (bytes == 0){
+                break;
+            }
+            else if (bytes < 0){
+                fprintf(stderr, "Error. Cannot read file.\n");
+                return;
+            }
+
+            void *temp = sendBuffer;
+            while (bytes > 0){
+                int bytesWritten = send(socketFD, temp, sizeof(sendBuffer), 0);
+                if (bytesWritten < 0) {
+                    fprintf(stderr, "Error in writing\n");
+                    return;
+                }
+                bytes -= bytesWritten;
+                temp += bytesWritten;
+            }
+            memset(sendBuffer, 0, sizeof(sendBuffer));
         }
 
-        //Send the contents of the file to the client
-        while((x = fread(sendBuffer, 1, sizeof(sendBuffer), fptr)) > 0){
-            send(socketFD, sendBuffer, x, 0);
-        }
-        send(socketFD, "_@_@_", 5, 0);
-
-        fclose(fptr);
-        return 0;
+        memset(sendBuffer, 0, sizeof(sendBuffer));
+        strcpy(sendBuffer, "_@_@_");
+        // send signal that done sending
+        send(socketFD, sendBuffer, sizeof(sendBuffer), 0);
     }
 
 }
@@ -407,6 +425,7 @@ int main(int argc, char* argv[]) {
         char dataPort[10];
         char sizeConfirm[10];
         char dirConfirm[10];
+        char fileConfirm[10];
         char ipAddr[100];
         char ipSize[10];
 
@@ -525,7 +544,7 @@ int main(int argc, char* argv[]) {
             }
 
             //receive ack that the client got the file contents
-            sendConfirm(establishedConnectionFD);
+            recvMessage(establishedConnectionFD, fileConfirm);
 
             //close the data port connection
             close(DPSocket);
