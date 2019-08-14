@@ -214,7 +214,7 @@ if __name__ == "__main__":
         x = 0
         fileContents = ""
         while (x < fileSize):
-            fileFromServer = dataConnQ.recv(dirSize)[0:-1]
+            fileFromServer = dataConnQ.recv(fileSize)[0:-1]
             x += len(fileFromServer)
             fileContents += fileFromServer
 
