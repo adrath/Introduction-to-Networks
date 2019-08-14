@@ -148,10 +148,10 @@ if __name__ == "__main__":
         dataConnQ.send("OK")
 
         #receive the directory from the server on connection Q
-        dirFromServer = dataConnQ.recv(100)       
+        dirFromServer = dataConnQ.recv(1000)       
         while "@" not in dirFromServer and dirFromServer != "":
-        #     print "%s" % dirFromServer
-            dirFromServer = dataConnQ.recv(100)
+        #    print "%s" % dirFromServer
+            dirFromServer = dataConnQ.recv(1000)
 
         newDirFromServer = dirFromServer.replace("@", "")
         print(newDirFromServer.replace(",", "\n"))
@@ -236,5 +236,5 @@ https://www.bogotobogo.com/python/python_network_programming_server_client.php
 https://www.pythonforbeginners.com/files/reading-and-writing-files-in-python
 https://www.geeksforgeeks.org/python-program-find-ip-address/
 https://stackoverflow.com/questions/3559559/how-to-delete-a-character-from-a-string-using-python
-
+https://www.w3schools.com/python/python_file_write.asp
 '''
