@@ -483,9 +483,9 @@ int main(int argc, char* argv[]) {
 
             //if the file exists, send the file contents
             //int errorTest = sendFile(DPSocket, fileName, fileSize);
-            if (errorTest < 0){
-                fprintf(stderr, "FTSERVER: Error sending the file contents"); exit(1);
-            }
+            //if (errorTest < 0){
+            //    fprintf(stderr, "FTSERVER: Error sending the file contents"); exit(1);
+            //}
 
             //receive ack that the client got the file contents
             sendConfirm(establishedConnectionFD);
