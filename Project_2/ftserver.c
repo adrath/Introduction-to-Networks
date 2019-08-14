@@ -49,6 +49,7 @@
 *    9. ftserver repeats from 2 (above) until terminated by a supervisor (SIGINT).
 *
 *********************************************************************/
+#include <arpa/inet.h>
 #include <dirent.h>
 #include <fcntl.h>
 #include <netinet/in.h>
@@ -130,6 +131,7 @@ int createDataSocket(int establishedConnectionFD, char* dataPort){
     //We need to pull the IP address of the client, so we will use getpeername
     socklen_t len = sizeof(addr);
     getpeername(establishedConnectionFD, (struct sockaddr*)&addr, &len);
+    
     // deal with both IPv4 and IPv6:
     if (addr.ss_family == AF_INET) {
         printf("AF_INET\n");
@@ -140,22 +142,32 @@ int createDataSocket(int establishedConnectionFD, char* dataPort){
         struct sockaddr_in6 *s = (struct sockaddr_in6 *)&addr;
         inet_ntop(AF_INET6, &s->sin6_addr, ipstr, sizeof ipstr);
     }
+    
     printf("Peer IP address: %s\n", ipstr);
     printf("Peer port      : %s\n", dataPort);
+    
     struct addrinfo hints, *res;
-    int dataSocketFD;
+    
     // first, load up address structs with getaddrinfo():
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
-    struct sockaddr_in *s = (struct sockaddr_in *)&addr;
-    getaddrinfo(ipstr, dataPort, &hints, &res);
-    dataSocketFD = socket(AF_INET, SOCK_STREAM, 0);
-    if (dataSocketFD < 0) {
-        error("Error opening data socket from server");
+    int flag = getaddrinfo(ipstr, dataPort, &hints, &res);
+
+    if (flag <= 0){
+        fprintf(stderr,"Error with creating IP addresss\n");exit(1);
     }
+
+    int dataSocketFD = socket(flag->ai_family, flag->ai_socktype, flag->ai_protocol);
+    if (dataSocketFD < 0){
+        fprintf(stderr,"Error opening data socket from server\n");exit(1);
+    }
+
     if (connect(dataSocketFD, res->ai_addr, res->ai_addrlen) < 0) {
-        error("Error connecting to data socket from server");
+        fprintf(stderr,"Error opening data socket from server\n");
+        close(dataSocketFD);
+        exit(1);
+
     }
 
     return dataSocketFD;
