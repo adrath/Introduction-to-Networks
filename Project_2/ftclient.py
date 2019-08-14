@@ -188,7 +188,7 @@ if __name__ == "__main__":
         print "dirSize = %s" % dirSize
         
         #determine if the message from the client is blank
-        #if dirSize == "":
+        if dirSize == "":
             print "Connection has ended, exiting chat with %s" % clientUsername
             print "dirSize = %d\n" % int(dirSize)
             exit(1)
