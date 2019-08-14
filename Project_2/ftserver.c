@@ -472,6 +472,7 @@ int main(int argc, char* argv[]) {
         else if(strstr(command, "g") != NULL){
             //receive the data port number
             recvMessage(establishedConnectionFD, dataPort);
+            printf("Data Port #: %s\n", dataPort);
             
             //send confirmation that recv dataPort
             sendConfirm(establishedConnectionFD);
@@ -482,9 +483,6 @@ int main(int argc, char* argv[]) {
             recvMessage(establishedConnectionFD, fileName);
             sendConfirm(establishedConnectionFD);
             printf("Name of File Requested: %s\n", fileName);
-
-            //check to see if the file exits (send an ack saying if the file exists or not)
-            int fileSize = getFileSize(fileName);
 
             //get the IP Address of the client
             memset(ipAddr, '\0', sizeof(ipAddr));
@@ -506,6 +504,9 @@ int main(int argc, char* argv[]) {
             
             //Confirm that the data connection was successful on client side
             recvMessage(DPSocket, sizeConfirm);
+
+            //check to see if the file exits (send an ack saying if the file exists or not)
+            int fileSize = getFileSize(fileName);
 
             //send size of file
             int confirm = send(DPSocket, &fileSize, sizeof(fileSize), 0);
