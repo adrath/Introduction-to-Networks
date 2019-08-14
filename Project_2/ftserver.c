@@ -364,6 +364,7 @@ int sendFile(int socketFD, char* fileName, int fileSize){
         while((x = fread(sendBuffer, 1, sizeof(sendBuffer), fptr)) > 0){
             send(socketFD, sendBuffer, x, 0);
         }
+        send(socketFD, "_@_@_", 5, 0);
 
         fclose(fptr);
         return 0;
@@ -509,13 +510,13 @@ int main(int argc, char* argv[]) {
             int fileSize = getFileSize(fileName);
 
             //send size of file
-            int confirm = send(DPSocket, &fileSize, sizeof(fileSize), 0);
-            if (confirm < 0){
-                fprintf(stderr, "FTSERVER: Error sending the directory size"); exit(1);
-            }
+            //int confirm = send(DPSocket, &fileSize, sizeof(fileSize), 0);
+            //if (confirm < 0){
+            //    fprintf(stderr, "FTSERVER: Error sending the directory size"); exit(1);
+            //}
 
             //Confirm the size of the file was recv by client
-            recvMessage(DPSocket, sizeConfirm);
+            //recvMessage(DPSocket, sizeConfirm);
 
             //if the file exists, send the file contents
             int errorTest = sendFile(DPSocket, fileName, fileSize);
@@ -527,7 +528,7 @@ int main(int argc, char* argv[]) {
             sendConfirm(establishedConnectionFD);
 
             //close the data port connection
-            //close(DPSocket);
+            close(DPSocket);
 
         }
         
