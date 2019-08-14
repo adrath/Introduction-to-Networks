@@ -168,7 +168,7 @@ if __name__ == "__main__":
         print "Check point 4\n"
 
         #set up the new socket on data port (connection Q)
-        clientSocket = socket(socket.AF_INET, socket.SOCK_STREAM)
+        clientSocket = socket(AF_INET, SOCK_STREAM)
 
         #Bind to the port
         clientSocket.bind(('',int(dataPort)))
