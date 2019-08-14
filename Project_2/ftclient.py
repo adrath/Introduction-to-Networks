@@ -217,6 +217,9 @@ if __name__ == "__main__":
         #    fileFromServer = dataConnQ.recv(fileSize)[0:-1]
         #    x += len(fileFromServer)
         #    fileContents += fileFromServer
+        fileContents = dataConnQ.recv(100)
+        while "Error: File Not Found or Do Not Have Permission To Send" not in fileContents or "_@_@_" not in fileContents:
+            fileContents = fileContents + dataConnQ.recv(100)
 
         #place file contents from the server into a file
         print(fileContents)
