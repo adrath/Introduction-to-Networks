@@ -62,7 +62,7 @@ Input: socket
 Output: N/A
 '''
 def getConfirm(sockFD):
-    confirmation = initConnP.recv(3)[0:-1]
+    confirmation = sockFD.recv(3)[0:-1]
     if (confirmation != "OK"):
         print "FTCLIENT: ERROR sending or receiving command\n"
         print "Confirmation = %s\n" % str(confirmation)
