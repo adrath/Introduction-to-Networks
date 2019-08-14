@@ -419,7 +419,7 @@ int main(int argc, char* argv[]) {
 
             printf("dataPort: %s\n", dataPort);
 
-            memset(ipAddr, 0, sizeof(IPAdd));
+            memset(ipAddr, 0, sizeof(ipAddr));
             recv(establishedConnectionFD, ipAddr, sizeof(ipAddr) - 1, 0);
             printf("ipAddr: %s\n", ipAddr);
 
