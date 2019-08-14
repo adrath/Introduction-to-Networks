@@ -476,13 +476,11 @@ int main(int argc, char* argv[]) {
             
             //send confirmation that recv dataPort
             sendConfirm(establishedConnectionFD);
-            sleep(1);
 
             //receive fileName
             char fileName[100];
-            recvMessage(establishedConnectionFD, fileName);
-
-            //send confirmation that fileName was recv
+            memset(fileName, '\0', sizeof(fileName));
+            recv(establishedConnectionFD, fileName, sizeof(fileName) - 1, 0);
             sendConfirm(establishedConnectionFD);
             printf("Name of File Requested: %s\n", fileName);
 
