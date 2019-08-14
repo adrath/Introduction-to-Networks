@@ -455,6 +455,7 @@ int main(int argc, char* argv[]) {
 
             //get the directory
             getDir(directoryArray);
+            print("directoryArray: %s\n", directoryArray);
 
             //receive the data port number
             recvMessage(establishedConnectionFD, dataPort);
