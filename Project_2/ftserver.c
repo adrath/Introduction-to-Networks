@@ -65,7 +65,7 @@
 #define MAX_SIZE 65000
 
 /******************************************************************************
-* Function: struct sockaddr_in setUpAddress(char* pn, char* user)
+* Function: struct addrinfo *setUpAddress(char *pn)
 * Description: set up the server address structure. A lot of the socket set up
 *   was taken from CS344 examples given by Benjamin Brewster. Specifically it came
 *   from client.c file provided in Block 4 of CS344 course. Also taken from my
@@ -73,57 +73,32 @@
 * Input: argv[1] (portNumber)
 * Output: struct sockaddr_in serverAddress
 ******************************************************************************/
-struct sockaddr_in setUpAddress(char* pn){
-    int portNumber;
-    int listenSocketFD;
-    struct sockaddr_in serverAddress;
+struct addrinfo *setUpAddress(char *pn)
+{
+    struct addrinfo hints;
+    struct addrinfo *serverAddress;
 
     //Initialize the address structure by clearing it out
-    memset((char*)&serverAddress, '\0', sizeof(serverAddress));
-    
-    //Taken from CS344 client.c file provided by Benjamin Brewster in Block 4 of course
-    portNumber = atoi(pn); // Get the port number, convert to an integer from a string
-	serverAddress.sin_family = AF_INET; // Create a network-capable socket
-	serverAddress.sin_port = htons(portNumber); // Store the port number
-	serverAddress.sin_addr.s_addr = INADDR_ANY; // Any address is allowed for connection to this process
+    memset(&hints, 0, sizeof hints);
 
-    //return the address to main
+    hints.ai_family = AF_INET; // Create a network-capable socket
+    hints.ai_socktype = SOCK_STREAM; // set to TCP stream
+    hints.ai_flags = AI_PASSIVE; // the returned socket addresses will be suitable 
+                                 //    for bind a socket that will accept connections
+
+
+    int flag = getaddrinfo(NULL, pn, &hints, &serverAddress);
+
+    // check for an error
+    if (flag != 0)
+    {
+        fprintf(stderr, "FTSERVER: ERROR establishing server info.\n");exit(1);
+    }
+
     return serverAddress;
 }
 
-/******************************************************************************
-* Function: int createSocket(struct sockaddr_in serverAddress)
-* Description: set up the socket and double check that the socket created actually
-*   connected to the server. Establish the connection as well.
-* Input: struct sockaddr_in serverAddress
-* Output: int socketFD
-******************************************************************************/
-int createSocket(struct sockaddr_in serverAddress){
-    //create the socket
-    int socketFD = socket(AF_INET, SOCK_STREAM, 0);
-    if (socketFD < 0){
-        perror("FTSERVER: Error opening socket\n");
-        exit(1);
-    }
-
-    // Use SO_REUSEADDR to Indicates that the rules used in validating addresses supplied in a bind() call should allow reuse of local addresses.
-	int enable = 1;
-	setsockopt(socketFD, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int));
-
-    // Enable the socket to begin listening
-	if (bind(socketFD, (struct sockaddr *)&serverAddress, sizeof(serverAddress)) < 0) { // Connect socket to port
-		fprintf(stderr, "ERROR on binding\n");
-        exit(1);
-	}
-	if(listen(socketFD, 5)< 0){ // Flip the socket on - it can now receive up to 5 connections
-        fprintf(stderr, "ERROR in listening\n");
-        exit(1);
-    }
-
-    return socketFD;
-}
-
-struct addrinfo* createDataAddress(char* ipAddr, char* dataPort){
+struct addrinfo* setUpDataAddress(char* ipAddr, char* dataPort){
     struct addrinfo hints, *res;
     
     // first, load up address structs with getaddrinfo():
@@ -139,30 +114,56 @@ struct addrinfo* createDataAddress(char* ipAddr, char* dataPort){
     return res;
 }
 
-int createDataSocket(struct addrinfo * res){
-	int dataSocketFD;
+/******************************************************************************
+* Function: int createSocket(struct addrinfo * res)
+* Description: set up the socket and double check that the socket created actually
+*   connected to the server. Establish the connection as well.
+* Input: struct addrinfo * res
+* Output: int socketFD
+******************************************************************************/
+int createSocket(struct addrinfo * res){
+	int socketFD;
 
-    dataSocketFD = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+    socketFD = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 	
 	//returning socket file
-	if (dataSocketFD == -1){
-		fprintf(stderr, "ERROR! Cannot create socket\n");
-		exit(1);
+	if (socketFD == -1){
+		fprintf(stderr, "ERROR! Cannot create socket\n");exit(1);
 	}
-	return dataSocketFD;
+	return socketFD;
 }
 
-void connectDataSocket(int dataSocketFD, struct addrinfo * res){
+
+void connectSocket(int socketFD, struct addrinfo * res){
 	int status;
 	
-    status = connect(dataSocketFD, res->ai_addr, res->ai_addrlen);
+    status = connect(socketFD, res->ai_addr, res->ai_addrlen);
 
 	//connects the address infrom from the linked list
 	if (status == -1){
-		fprintf(stderr, "ERROR! Cannot connect socket\n"); //error message
-        close(dataSocketFD);
+		fprintf(stderr, "ERROR! Cannot connect socket\n");
+        close(socketFD);
 		exit(1);
 	}
+}
+
+void bindAndListen(int socketFD, struct addrinfo *res)
+{
+    int flag = bind(socketFD, res->ai_addr, res->ai_addrlen);
+    if (flag == -1)
+    {
+        fprintf(stderr, "FTSERVER: ERROR, socket cannot bind.\n");
+        close(socketFD);
+        exit(1);
+    }
+
+    flag = listen(socketFD, 5);
+    if (flag == -1)
+    {
+        fprintf(stderr, "FTSERVER: ERROR, socket cannot listen.\n");
+        close(socketFD);
+        exit(1);
+    }
 }
 
 /*******************************************************************************
@@ -365,8 +366,8 @@ void sendDir(int socketFD, char* listOfFiles, int dirSize){
 int main(int argc, char* argv[]) {
     //Declare variables
     int socketFD;
-    struct sockaddr_in serverAddress;
-    struct sockaddr_in clientAddress;
+    struct addrinfo* serverAddress;
+    struct addrinfo* clientAddress;
 	socklen_t sizeOfClientInfo;
 
 
@@ -381,6 +382,9 @@ int main(int argc, char* argv[]) {
 
     //create the socket and establish a connection to client
     socketFD = createSocket(serverAddress);
+
+    //have the socket bind and listen for a connection
+    bindAndListen(socketFD, serverAddress);
     
     //Keep this socket up and running until ended with a SIGINT call.
     while(1){
@@ -427,8 +431,8 @@ int main(int argc, char* argv[]) {
             sendConfirm(establishedConnectionFD);
 
             struct addrinfo *res = createDataAddress(ipAddr, dataPort);
-            int DPSocket = createDataSocket(res);
-            connectDataSocket(DPSocket, res);
+            int DPSocket = createSocket(res);
+            connectSocket(DPSocket, res);
 
             printf("connection!\n");fflush(stdout);
 
