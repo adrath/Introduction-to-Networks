@@ -148,10 +148,10 @@ if __name__ == "__main__":
         dataConnQ.send("OK")
 
         #receive the directory from the server on connection Q
-        dirFromServer = dataConnQ.recv(1000)       
+        dirFromServer = dataConnQ.recv(10000)       
         while "@" not in dirFromServer and dirFromServer != "":
         #    print "%s" % dirFromServer
-            dirFromServer = dataConnQ.recv(1000)
+            dirFromServer = dataConnQ.recv(10000)
 
         newDirFromServer = dirFromServer.replace("@", "")
         print(newDirFromServer.replace(",", "\n"))
