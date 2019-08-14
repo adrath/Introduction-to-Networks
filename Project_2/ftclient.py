@@ -165,7 +165,7 @@ if __name__ == "__main__":
     #if getting a file from the server
     elif (commandID == "g"):
         #send commandID of "l" to the server and wait for ack that received the request for the directory
-        initConnP.send("l")
+        initConnP.send("g")
         getConfirm(initConnP)
 
         #send the data port number to server on connection P and receive confirmation that data port was received
