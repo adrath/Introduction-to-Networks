@@ -482,26 +482,44 @@ int main(int argc, char* argv[]) {
             recvMessage(establishedConnectionFD, fileName);
             sendConfirm(establishedConnectionFD);
 
-            //establish the data port connection
-            //int DPSocket = createDataSocket(establishedConnectionFD, dataPort);
-
             //check to see if the file exits (send an ack saying if the file exists or not)
             int fileSize = getFileSize(fileName);
 
+            //get the IP Address of the client
+            memset(ipAddr, '\0', sizeof(ipAddr));
+            recv(establishedConnectionFD, ipAddr, sizeof(ipAddr) - 1, 0);
+            printf("IP Address of Client: %s\n", ipAddr);
+
+            //send confirmation that the IP address was received
+            sendConfirm(establishedConnectionFD);
+
+            //Sleep the program for just a second so that the client can catch up
+            sleep(1);
+
+            //Set up data link address
+            struct addrinfo *dataRes = setUpDataAddress(ipAddr, dataPort);
+            int DPSocket = createSocket(dataRes);
+            connectSocket(DPSocket, dataRes);
+
+            printf("Successful data connection!\n");fflush(stdout);
+            
+            //Confirm that the data connection was successful on client side
+            recvMessage(DPSocket, sizeConfirm);
+
             //send size of file
-            //int confirm = send(DPSocket, &fileSize, sizeof(fileSize), 0);
-            //if (confirm < 0){
-            //    fprintf(stderr, "FTSERVER: Error sending the directory size"); exit(1);
-            //}
+            int confirm = send(DPSocket, &fileSize, sizeof(fileSize), 0);
+            if (confirm < 0){
+                fprintf(stderr, "FTSERVER: Error sending the directory size"); exit(1);
+            }
 
             //Confirm the size of the file was recv by client
-            //recvMessage(DPSocket, sizeConfirm);
+            recvMessage(DPSocket, sizeConfirm);
 
             //if the file exists, send the file contents
-            //int errorTest = sendFile(DPSocket, fileName, fileSize);
-            //if (errorTest < 0){
-            //    fprintf(stderr, "FTSERVER: Error sending the file contents"); exit(1);
-            //}
+            int errorTest = sendFile(DPSocket, fileName, fileSize);
+            if (errorTest < 0){
+                fprintf(stderr, "FTSERVER: Error sending the file contents"); exit(1);
+            }
 
             //receive ack that the client got the file contents
             sendConfirm(establishedConnectionFD);
