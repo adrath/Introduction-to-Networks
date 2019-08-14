@@ -245,6 +245,8 @@ int getDir(char* listOfFiles[]){
             i++;
         }
     }
+    listOfFiles[i] = "@@";
+    i++;
 
     //Add the number of newline characters that need to be sent to cDirSize
     int numOfFiles = i;
@@ -453,8 +455,9 @@ int main(int argc, char* argv[]) {
                 i++;
                 printf("%s\n",directoryArray[i]);
             }
-            char a[] = "@@";
-            send(socketFD, a, strlen(a), 0);
+            //char a[] = "@@";
+            //send(socketFD, a, strlen(a), 0);
+            //printf("@@\n");
 
             //receive ack that the client got the directory
             recvMessage(DPSocket, dirConfirm);
