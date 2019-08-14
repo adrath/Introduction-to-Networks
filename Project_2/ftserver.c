@@ -424,7 +424,7 @@ int main(int argc, char* argv[]) {
             //send confirmation that data port was recv.
             sendConfirm(establishedConnectionFD);
 
-            memset(ipAddr, 0, sizeof(ipAddr));
+            memset(ipAddr, '\0', sizeof(ipAddr));
             recv(establishedConnectionFD, ipAddr, sizeof(ipAddr) - 1, 0);
             printf("ipAddr: %s\n", ipAddr);
 
