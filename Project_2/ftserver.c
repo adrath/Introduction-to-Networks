@@ -424,12 +424,17 @@ int main(int argc, char* argv[]) {
             //send confirmation that data port was recv.
             sendConfirm(establishedConnectionFD);
 
+            //get the IP Address of the client
             memset(ipAddr, '\0', sizeof(ipAddr));
             recv(establishedConnectionFD, ipAddr, sizeof(ipAddr) - 1, 0);
             printf("ipAddr: %s\n", ipAddr);
 
+            //send confirmation that the IP address was received
             sendConfirm(establishedConnectionFD);
 
+            sleep(2);
+
+            //Set up data link address
             struct addrinfo *dataRes = setUpDataAddress(ipAddr, dataPort);
             int DPSocket = createSocket(dataRes);
             connectSocket(DPSocket, dataRes);
