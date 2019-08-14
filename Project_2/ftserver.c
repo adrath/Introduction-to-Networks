@@ -481,6 +481,7 @@ int main(int argc, char* argv[]) {
             memset(fileName, '\0', sizeof(fileName));
             recvMessage(establishedConnectionFD, fileName);
             sendConfirm(establishedConnectionFD);
+            printf("Name of File Requested: %s\n", fileName);
 
             //check to see if the file exits (send an ack saying if the file exists or not)
             int fileSize = getFileSize(fileName);
