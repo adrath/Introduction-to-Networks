@@ -141,9 +141,11 @@ struct addrinfo* createDataAddress(char* ipAddr, char* dataPort){
 
 int createDataSocket(struct addrinfo * res){
 	int dataSocketFD;
+
+    dataSocketFD = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 	
 	//returning socket file
-	if ((dataSocketFD = socket((struct addrinfo *)(res)->ai_family, res->ai_socktype, res->ai_protocol)) == -1){
+	if (dataSocketFD == -1){
 		fprintf(stderr, "ERROR! Cannot create socket\n");
 		exit(1);
 	}
@@ -471,16 +473,16 @@ int main(int argc, char* argv[]) {
             int fileSize = getFileSize(fileName);
 
             //send size of file
-            int confirm = send(DPSocket, &fileSize, sizeof(fileSize), 0);
-            if (confirm < 0){
-                fprintf(stderr, "FTSERVER: Error sending the directory size"); exit(1);
-            }
+            //int confirm = send(DPSocket, &fileSize, sizeof(fileSize), 0);
+            //if (confirm < 0){
+            //    fprintf(stderr, "FTSERVER: Error sending the directory size"); exit(1);
+            //}
 
             //Confirm the size of the file was recv by client
-            recvMessage(DPSocket, sizeConfirm);
+            //recvMessage(DPSocket, sizeConfirm);
 
             //if the file exists, send the file contents
-            int errorTest = sendFile(DPSocket, fileName, fileSize);
+            //int errorTest = sendFile(DPSocket, fileName, fileSize);
             if (errorTest < 0){
                 fprintf(stderr, "FTSERVER: Error sending the file contents"); exit(1);
             }
@@ -489,7 +491,7 @@ int main(int argc, char* argv[]) {
             sendConfirm(establishedConnectionFD);
 
             //close the data port connection
-            close(DPSocket);
+            //close(DPSocket);
 
         }
         
