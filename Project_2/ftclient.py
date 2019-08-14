@@ -201,7 +201,8 @@ if __name__ == "__main__":
         #ds = int(dirSize.strip('\0'))
         #print "ds = %d" % ds
 
-        
+        sleep(2)
+
         dirFromServer = dataConnQ.recv(100)
         while "@" not in dirFromServer and dirFromServer != "":
             print "%s" % dirFromServer
