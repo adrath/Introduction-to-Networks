@@ -56,29 +56,17 @@ from struct import *
 from time import sleep
 
 '''
-Function: def createSocket()
-Description: set up a socket to connect to ftserver.
-Input:
-Output:
+Function: def getConfirm(sockFD)
+Description: receive confirmation from server
+Input: socket
+Output: N/A
 '''
-
-
-'''
-Function: def sendMessage()
-Description: send a message to the server
-
-Input:
-Output:
-'''
-
-
-'''
-Function: def recvMessage()
-Description: receive message from the server
-
-Input:
-Output:
-'''
+def getConfirm(sockFD):
+    confirmation = initConnP.recv(3)[0:-1]
+    if (confirmation != "OK"):
+        print "FTCLIENT: ERROR sending or receiving command\n"
+        print "Confirmation = %s\n" % str(confirmation)
+        exit(1)
 
 
 
@@ -132,10 +120,60 @@ if __name__ == "__main__":
 
     #If getting the directory from the server
     if (commandID == "l"):
-        #send commandID of "l" to the server
+        #send commandID of "l" to the server and wait for ack that received the request for the directory
         initConnP.send("l")
+        getConfirm(initConnP)
 
-        #wait for ack that received the request for the directory
+        #send the data port number to server on connection P and receive confirmation that data port was received
+        initConnP.send(str(dataPort))
+        getConfirm(initConnP)
+
+        #send the data port number to server on connection P and receive confirmation that data port was received
+        initConnP.send(str(fileName)
+        getConfirm(initConnP)
+
+        #send the data port number to server on connection P and receive confirmation that data port was received
+        initConnP.send(str(IPAddr))
+        getConfirm(initConnP)
+
+        #set up the new socket on data port (connection Q)
+        clientSocket = socket(AF_INET, SOCK_STREAM)
+
+        #Bind to the port
+        clientSocket.bind(('',int(dataPort)))
+
+        #Look at up to 1 request
+        clientSocket.listen(1)
+
+        #establish a new socket object usable to send and receive data on the connection and the address
+        #   bound to the socket on the other end of the connection.
+        dataConnQ, addr = clientSocket.accept()
+        print "Connected on address %s" % str(addr)
+
+        #confirm that the connection was established
+        dataConnQ.send("OK")
+
+        #receive the directory from the server on connection Q
+        dirFromServer = dataConnQ.recv(100)       
+        while "@" not in dirFromServer and dirFromServer != "":
+        #     print "%s" % dirFromServer
+            dirFromServer = dataConnQ.recv(100)
+
+        newDirFromServer = dirFromServer.replace("@", "")
+        print(newDirFromServer.replace(",", "\n"))
+
+        #send confirmation that the directory was received
+        dataConnQ.send("OK")
+
+        dataConnQ.close()
+
+
+    #if getting a file from the server
+    elif (commandID == "g"):
+        #send commandID of "g" to the server
+        initConnP.send("g")
+
+        #wait for ack that received the request for the filename
         confirmation = initConnP.recv(3)[0:-1]
         if (confirmation != "OK"):
             print "FTCLIENT: ERROR sending or receiving command\n"
@@ -179,60 +217,6 @@ if __name__ == "__main__":
         #confirm that the connection was established
         dataConnQ.send("OK")
         
-        #receive the directory from the server on connection Q
-        dirFromServer = dataConnQ.recv(100)       
-        while "@" not in dirFromServer and dirFromServer != "":
-        #     print "%s" % dirFromServer
-            dirFromServer = dataConnQ.recv(100)
-
-        newDirFromServer = dirFromServer.replace("@", "")
-        print(newDirFromServer.replace(",", "\n"))
-
-        #send confirmation that the directory was received
-        dataConnQ.send("OK")
-
-        dataConnQ.close()
-
-
-    #if getting a file from the server
-    elif (commandID == "g"):
-        #send commandID of "g" to the server
-        initConnP.send("g")
-
-        #wait for ack that received the request for the filename
-        confirmation = initConnP.recv(3)[0:-1]
-        if (confirmation != "OK"):
-            print "FTCLIENT: ERROR sending or receiving command\n"
-            print "Confirmation = %s\n" % str(confirmation)
-            exit(1)
-
-        #send the data port number to server on connection P
-        initConnP.send(str(dataPort))
-
-        #receive confirmation that data port was received
-        confirmation = initConnP.recv(3)[0:-1]
-        if (confirmation != "OK"):
-            print "FTCLIENT: ERROR sending or receiving data port\n"
-            print "Confirmation = %s\n" % str(confirmation)
-            exit(1)
-
-        #set up the new socket on data port (connection Q)
-        clientSocket = socket(AF_INET, SOCK_STREAM)
-
-        #Bind to the port
-        clientSocket.bind(('',int(dataPort)))
-
-        #Look at up to 1 request
-        clientSocket.listen(1)
-
-        print "Waiting to connect on data socket"
-
-        #establish a new socket object usable to send and receive data on the connection and the address
-        #   bound to the socket on the other end of the connection.
-        dataConnQ, addr = clientSocket.accept()
-        print "Connected on address %s" % str(addr)
-        
-
         #receive the size of the directory from the server on connection Q
         fileSize = dataConnQ.recv(7)[0:-1]
 
@@ -241,6 +225,9 @@ if __name__ == "__main__":
             print "Connection has ended, exiting chat with %s" % clientUsername
             print "fileSize = %d\n" % int(fileSize)
             exit(1)
+
+        #confirm that the connection was established
+        dataConnQ.send("OK")
 
         #receive the file contents from the server on connection Q
         x = 0
