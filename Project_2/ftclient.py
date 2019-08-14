@@ -203,7 +203,7 @@ if __name__ == "__main__":
 
         
         dirFromServer = dataConnQ.recv(100)
-        while "@" not in dirFromServer or dirFromServer != "":
+        while "@" not in dirFromServer and dirFromServer != "":
             print "%s" % dirFromServer
             dirFromServer = dataConnQ.recv(100)
 
