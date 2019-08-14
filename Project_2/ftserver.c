@@ -160,7 +160,7 @@ int createDataSocket(int establishedConnectionFD, char* dataPort){
 
     int dataSocketFD = socket(res->ai_family, res->ai_socktype, flag);
     if (dataSocketFD < 0){
-        fprintf(stderr,"Error opening data socket from server\n");exit(1);
+        fprintf(stderr,"Error opening data socket from server!!!!\n");exit(1);
     }
 
     if (connect(dataSocketFD, res->ai_addr, res->ai_addrlen) < 0) {
