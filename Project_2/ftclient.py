@@ -126,6 +126,11 @@ if __name__ == "__main__":
 
     initConnP.connect((serverHost,serverPort))
 
+    #get IP address
+    IPSock = socket(AF_INET, SOCK_DGRAM)     
+    IPSock.connect(("8.8.8.8", 80))
+    IPAddr = IPSock.getsockname()[0]
+
     #If getting the directory from the server
     if (commandID == "l"):
         #send commandID of "l" to the server
@@ -149,6 +154,18 @@ if __name__ == "__main__":
             exit(1)
                 
         print "Check point 3\n"
+
+        #send the data port number to server on connection P
+        initConnP.send(str(IPAddr))
+
+        #receive confirmation that data port was received
+        confirmation = initConnP.recv(3)[0:-1]
+        if (confirmation != "OK"):
+            print "FTCLIENT: ERROR sending or receiving data port\n"
+            print "Confirmation = %s\n" % str(confirmation)
+            exit(1)
+                
+        print "Check point 4\n"
 
         #set up the new socket on data port (connection Q)
         clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
