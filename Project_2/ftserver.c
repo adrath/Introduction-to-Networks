@@ -249,11 +249,10 @@ void sendConfirm(int socketFD){
 * Input: char* listOfFiles[], int* numOfFiles
 * Output: int cDirSize;
 *******************************************************************************/
-int getDir(char* listOfFiles[]){
+void getDir(char* listOfFiles){
     //declare variables
     struct dirent* cDirectory;
     DIR* cDir;
-    int i = 0;
 
     //open the current directory
     cDir = opendir(".");
@@ -267,17 +266,13 @@ int getDir(char* listOfFiles[]){
 
         //Check if the file is a regular file, if it is add to array of characters
         if(cDirectory->d_type == DT_REG){
-            listOfFiles[i] = cDirectory->d_name;
-            i++;
+            snprintf(listOfFiles, sizeof(listOfFiles, "%s,", cDirectory->d_name);
         }
     }
-    listOfFiles[i] = "@@";
-    i++;
+    snprintf(listOfFiles, sizeof(listOfFiles, "%s", "@");
 
     //Close directory
     closedir(cDir);
-
-    return i;
 }
 
 /*******************************************************************************
@@ -428,12 +423,12 @@ int main(int argc, char* argv[]) {
         //determine what request to perform
         if (strstr(command, "l") != NULL){
             //Initialize directory character array
-            char* directoryArray[MAX_SIZE];
+            char directoryArray[MAX_SIZE];
             memset(directoryArray, '\0', sizeof(directoryArray));
 
             //get the directory
-            int numOfFiles = getDir(directoryArray);
-            printf("numOfFiles = %d\n", numOfFiles);
+            getDir(directoryArray);
+            printf("directoryArray: %s\n", directoryArray);
 
             //receive the data port number
             recvMessage(establishedConnectionFD, dataPort);
@@ -469,16 +464,18 @@ int main(int argc, char* argv[]) {
             recvMessage(DPSocket, sizeConfirm);
 
             //send the directory
-            int i = 0;
-            for (i=0; i < numOfFiles; i++){
-                printf("%s\n",directoryArray[i]);
-                send(DPSocket, directoryArray[i], strlen(directoryArray[i]), 0);
-            }
+            // int i = 0;
+            // for (i=0; i < numOfFiles; i++){
+            //     printf("%s\n",directoryArray[i]);
+            //     send(DPSocket, directoryArray[i], strlen(directoryArray[i]), 0);
+            // }
             //char *a = "@@";
             //int confirm = send(socketFD, a, sizeof(a), 0);
             //if (confirm < 0){
             //    fprintf(stderr, "FTSERVER: Error sending @@"); exit(1);
             //}
+
+            sendDir(directoryArray);
 
             //receive ack that the client got the directory
             recvMessage(DPSocket, dirConfirm);
