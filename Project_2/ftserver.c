@@ -154,7 +154,7 @@ int createDataSocket(int establishedConnectionFD, char* dataPort){
     hints.ai_socktype = SOCK_STREAM;
     int flag = getaddrinfo(ipstr, dataPort, &hints, &res);
 
-    if (flag <= 0){
+    if (flag != 0){
         fprintf(stderr,"Error with creating IP addresss\n");exit(1);
     }
 
