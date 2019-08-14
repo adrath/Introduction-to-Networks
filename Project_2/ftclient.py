@@ -196,37 +196,21 @@ if __name__ == "__main__":
 
         #confirm that the connection was established
         dataConnQ.send("OK")
-        
-        #receive the size of the directory from the server on connection Q
-        #fileSize = dataConnQ.recv(7)[0:-1]
-        #print "fileSize: %s\n" % fileSize
-
-        #determine if the message from the client is blank
-        #if fileSize == "" or fileSize == "0":
-        #    print "Connection has ended, exiting chat with %s" % clientUsername
-        #    print "fileSize = %d\n" % int(fileSize)
-        #    exit(1)
-
-        #confirm that the connection was established
-        #dataConnQ.send("OK")
 
         #receive the file contents from the server on connection Q
-        #x = 0
-        #fileContents = ""
-        #while (x < fileSize):
-        #    fileFromServer = dataConnQ.recv(fileSize)[0:-1]
-        #    x += len(fileFromServer)
-        #    fileContents += fileFromServer
         sleep (3)
         fileContents = dataConnQ.recv(100)
         while "_@_@_" not in fileContents:
             fileContents = fileContents + dataConnQ.recv(100)
 
         #place file contents from the server into a file
-        print(fileContents)
+        newFile = fileName + "_copy"
+        f = open(newFile, "w")
+        f.write(fileContents)
+        f.close()
 
         #print successfully placed into file
-        print "transfer complete"
+        print "File Transfer Complete!\n"
 
     
     #close connection Q, then close connection P
