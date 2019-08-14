@@ -223,11 +223,10 @@ void sendConfirm(int socketFD){
 * Input: char* listOfFiles[], int* numOfFiles
 * Output: int cDirSize;
 *******************************************************************************/
-int getDir(char* listOfFiles[], int* numOfFiles){
+int getDir(char* listOfFiles[]){
     //declare variables
     struct dirent* cDirectory;
     DIR* cDir;
-    int cDirSize = 0;
     int i = 0;
 
     //open the current directory
@@ -243,20 +242,17 @@ int getDir(char* listOfFiles[], int* numOfFiles){
         //Check if the file is a regular file, if it is add to array of characters
         if(cDirectory->d_type == DT_REG){
             listOfFiles[i] = cDirectory->d_name;
-            cDirSize += strlen(listOfFiles[i]);
             i++;
         }
     }
 
     //Add the number of newline characters that need to be sent to cDirSize
-    cDirSize += i - 1;
-    printf("cDirSize: %d\n", cDirSize);
-    *numOfFiles = i;
+    int numOfFiles = i;
 
     //Close directory
     closedir(cDir);
 
-    return cDirSize;
+    return numOfFiles;
 }
 
 
@@ -339,12 +335,12 @@ int sendFile(int socketFD, char* fileName, int fileSize){
 
 
 /*******************************************************************************
-* Function: void sendDir(int socketFD, char* listOfFiles[], int dirSize)
+* Function: void sendDir(int socketFD, char* listOfFiles[])
 * Description: send the entire list of files in the directory. Keep track that 
 *   the entire list of characters was sent. Will call setUpAddress and createSocket
 *   to create the connection between the server and the client to send the directory.
 *******************************************************************************/
-void sendDir(int socketFD, char* listOfFiles, int dirSize){
+void sendDir(int socketFD, char* listOfFiles){
     size_t stringLength = strlen(listOfFiles);
     size_t charWritten = 0;
 
@@ -414,9 +410,8 @@ int main(int argc, char* argv[]) {
             memset(directoryArray, '\0', sizeof(directoryArray));
 
             //get the directory
-            int numOfFiles;
-            int dirSize = getDir(directoryArray, &numOfFiles);
-            printf("dirSize = %d\n", dirSize);
+            int numOfFiles = getDir(directoryArray);
+            printf("numOfFiles = %d\n", numOfFiles);
 
             //receive the data port number
             recvMessage(establishedConnectionFD, dataPort);
@@ -454,7 +449,7 @@ int main(int argc, char* argv[]) {
             //send the directory
             int i = 0;
             while (i < numOfFiles){
-                sendDir(DPSocket, directoryArray[i], dirSize);
+                sendDir(DPSocket, directoryArray[i]);
                 i++;
                 printf("%s\n",directoryArray[i]);
             }
