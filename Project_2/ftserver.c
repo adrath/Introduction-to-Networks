@@ -428,11 +428,10 @@ int main(int argc, char* argv[]) {
 
             //get the directory
             getDir(directoryArray);
-            printf("directoryArray: %s\n", directoryArray);
 
             //receive the data port number
             recvMessage(establishedConnectionFD, dataPort);
-            printf("dataPort: %s\n", dataPort);
+            printf("Data Port #: %s\n", dataPort);
 
             //send confirmation that data port was recv.
             sendConfirm(establishedConnectionFD);
@@ -440,11 +439,12 @@ int main(int argc, char* argv[]) {
             //get the IP Address of the client
             memset(ipAddr, '\0', sizeof(ipAddr));
             recv(establishedConnectionFD, ipAddr, sizeof(ipAddr) - 1, 0);
-            printf("ipAddr: %s\n", ipAddr);
+            printf("IP Address of Client: %s\n", ipAddr);
 
             //send confirmation that the IP address was received
             sendConfirm(establishedConnectionFD);
 
+            //Sleep the program for just a second so that the client can catch up
             sleep(1);
 
             //Set up data link address
@@ -452,38 +452,21 @@ int main(int argc, char* argv[]) {
             int DPSocket = createSocket(dataRes);
             connectSocket(DPSocket, dataRes);
 
-            printf("connection!\n");fflush(stdout);
-
-            //send size of directory
-            //int confirm = send(DPSocket, &dirSize, sizeof(dirSize), 0);
-            //if (confirm < 0){
-            //    fprintf(stderr, "FTSERVER: Error sending the directory size"); exit(1);
-            //}
+            printf("Successful data connection!\n");fflush(stdout);
             
             //Confirm the size of the directory was recv by client
             recvMessage(DPSocket, sizeConfirm);
 
             //send the directory
-            // int i = 0;
-            // for (i=0; i < numOfFiles; i++){
-            //     printf("%s\n",directoryArray[i]);
-            //     send(DPSocket, directoryArray[i], strlen(directoryArray[i]), 0);
-            // }
-            //char *a = "@@";
-            //int confirm = send(socketFD, a, sizeof(a), 0);
-            //if (confirm < 0){
-            //    fprintf(stderr, "FTSERVER: Error sending @@"); exit(1);
-            //}
-
             sendDir(DPSocket, directoryArray);
 
             //receive ack that the client got the directory
             recvMessage(DPSocket, dirConfirm);
 
-            sleep(1);
-
             //close the data port connection
             close(DPSocket);
+
+            printf("Data Connection has been close\n");
 
         }
         else if(strstr(command, "g") != NULL){
