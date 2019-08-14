@@ -204,7 +204,7 @@ if __name__ == "__main__":
             fileContents = fileContents + dataConnQ.recv(100)
 
         #remove the _@_@_ at the end of the file contents
-        newFileContents = dirFromServer.replace("\n_@_@_", "")
+        newFileContents = fileContents.replace("\n_@_@_", "")
 
         #place file contents from the server into a file
         newFile = fileName + "_copy"
