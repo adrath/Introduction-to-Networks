@@ -456,6 +456,7 @@ int main(int argc, char* argv[]) {
             while (i < numOfFiles){
                 sendDir(DPSocket, directoryArray[i], dirSize);
                 i++;
+                printf("%s\n",directoryArray[i]);
             }
             char* a = "@@";
             send(socketFD, a, strlen(a), 0);
