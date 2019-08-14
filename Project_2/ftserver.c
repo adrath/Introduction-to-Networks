@@ -155,9 +155,12 @@ int createDataSocket(struct addrinfo * res){
 void connectDataSocket(int dataSocketFD, struct addrinfo * res){
 	int status;
 	
+    status = connect(dataSocketFD, res->ai_addr, res->ai_addrlen);
+
 	//connects the address infrom from the linked list
-	if ((status = connect(dataSocketFD, res->ai_addr, res->ai_addrlen)) == -1){
+	if (status == -1){
 		fprintf(stderr, "ERROR! Cannot connect socket\n"); //error message
+        close(dataSocketFD);
 		exit(1);
 	}
 }
@@ -416,8 +419,6 @@ int main(int argc, char* argv[]) {
 
             //send confirmation that data port was recv.
             sendConfirm(establishedConnectionFD);
-
-            printf("dataPort: %s\n", dataPort);
 
             memset(ipAddr, 0, sizeof(ipAddr));
             recv(establishedConnectionFD, ipAddr, sizeof(ipAddr) - 1, 0);
