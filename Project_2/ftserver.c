@@ -301,7 +301,7 @@ void sendDir(int socketFD, char* listOfFiles){
     //     charWritten += check;
     // }
 
-    check = send(socketFD, listOfFiles, strlen(listOfFiles), 0);
+    int check = send(socketFD, listOfFiles, strlen(listOfFiles), 0);
     if(check < 0){
         fprintf(stderr, "FTSERVER: ERROR writing directory to socket\n"); exit(1);
     }
