@@ -266,7 +266,7 @@ void getDir(char* listOfFiles){
         //Check if the file is a regular file, if it is add to array of characters
         if(cDirectory->d_type == DT_REG){
             strcat(listOfFiles, cDirectory->d_name);
-            strcat(listOfFiles, ",")
+            strcat(listOfFiles, ",");
         }
     }
     strcat(listOfFiles, "@");
