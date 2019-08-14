@@ -150,7 +150,7 @@ int createDataSocket(struct addrinfo * res){
 	return dataSocketFD;
 }
 
-void connect_socket(int dataSocketFD, struct addrinfo * res){
+void connectDataSocket(int dataSocketFD, struct addrinfo * res){
 	int status;
 	
 	//connects the address infrom from the linked list
@@ -422,8 +422,9 @@ int main(int argc, char* argv[]) {
 
             sendConfirm(establishedConnectionFD);
 
-            //establish the data port connection
-            int DPSocket = createDataSocket(establishedConnectionFD, dataPort);
+            struct addrinfo *res = createDataAddress(ipAddr, dataPort);
+            int DPSocket = createDataSocket(res);
+            connectDataSocket(DPSocket, res);
 
             printf("connection!\n");fflush(stdout);
 
@@ -464,7 +465,7 @@ int main(int argc, char* argv[]) {
             sendConfirm(establishedConnectionFD);
 
             //establish the data port connection
-            int DPSocket = createDataSocket(establishedConnectionFD, dataPort);
+            //int DPSocket = createDataSocket(establishedConnectionFD, dataPort);
 
             //check to see if the file exits (send an ack saying if the file exists or not)
             int fileSize = getFileSize(fileName);
