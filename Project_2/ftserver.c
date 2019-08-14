@@ -158,7 +158,7 @@ int createDataSocket(int establishedConnectionFD, char* dataPort){
         fprintf(stderr,"Error with creating IP addresss\n");exit(1);
     }
 
-    int dataSocketFD = socket(flag->ai_family, flag->ai_socktype, flag->ai_protocol);
+    int dataSocketFD = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
     if (dataSocketFD < 0){
         fprintf(stderr,"Error opening data socket from server\n");exit(1);
     }
