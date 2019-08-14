@@ -69,8 +69,6 @@ def getConfirm(sockFD):
         exit(1)
 
 
-
-
 '''
 Function: if __name__ == "__main__":
 Description:
@@ -166,35 +164,21 @@ if __name__ == "__main__":
 
     #if getting a file from the server
     elif (commandID == "g"):
-        #send commandID of "g" to the server
-        initConnP.send("g")
+        #send commandID of "l" to the server and wait for ack that received the request for the directory
+        initConnP.send("l")
+        getConfirm(initConnP)
 
-        #wait for ack that received the request for the filename
-        confirmation = initConnP.recv(3)[0:-1]
-        if (confirmation != "OK"):
-            print "FTCLIENT: ERROR sending or receiving command\n"
-            print "Confirmation = %s\n" % str(confirmation)
-            exit(1)
-
-        #send the data port number to server on connection P
+        #send the data port number to server on connection P and receive confirmation that data port was received
         initConnP.send(str(dataPort))
+        getConfirm(initConnP)
 
-        #receive confirmation that data port was received
-        confirmation = initConnP.recv(3)[0:-1]
-        if (confirmation != "OK"):
-            print "FTCLIENT: ERROR sending or receiving data port\n"
-            print "Confirmation = %s\n" % str(confirmation)
-            exit(1)
+        #send the file name to server on connection P and receive confirmation that file name was received
+        initConnP.send(str(fileName))
+        getConfirm(initConnP)
 
-        #send the data port number to server on connection P
+        #send the data port number to server on connection P and receive confirmation that data port was received
         initConnP.send(str(IPAddr))
-
-        #receive confirmation that data port was received
-        confirmation = initConnP.recv(3)[0:-1]
-        if (confirmation != "OK"):
-            print "FTCLIENT: ERROR sending or receiving data port\n"
-            print "Confirmation = %s\n" % str(confirmation)
-            exit(1)
+        getConfirm(initConnP)
 
         #set up the new socket on data port (connection Q)
         clientSocket = socket(AF_INET, SOCK_STREAM)
@@ -215,6 +199,7 @@ if __name__ == "__main__":
         
         #receive the size of the directory from the server on connection Q
         fileSize = dataConnQ.recv(7)[0:-1]
+        print "fileSize: %s\n" % fileSize
 
         #determine if the message from the client is blank
         if fileSize == "" or fileSize == "0":
@@ -234,6 +219,7 @@ if __name__ == "__main__":
             fileContents += fileFromServer
 
         #place file contents from the server into a file
+        print(fileContents)
 
         #print successfully placed into file
         print "transfer complete"
