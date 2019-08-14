@@ -203,10 +203,13 @@ if __name__ == "__main__":
         while "_@_@_" not in fileContents:
             fileContents = fileContents + dataConnQ.recv(100)
 
+        #remove the _@_@_ at the end of the file contents
+        newFileContents = dirFromServer.replace("\n_@_@_", "")
+
         #place file contents from the server into a file
         newFile = fileName + "_copy"
         f = open(newFile, "w")
-        f.write(fileContents)
+        f.write(newFileContents)
         f.close()
 
         #print successfully placed into file
