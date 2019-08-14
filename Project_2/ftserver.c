@@ -256,18 +256,18 @@ int getDir(char* listOfFiles[]){
     int i = 0;
 
     //open the current directory
-    cDir = opendir(".");
-    if (cDir == NULL){
+    cDirectory = opendir(".");
+    if (cDirectory == NULL){
         printf("Cannot open directory\n");
         return -1;
     }
 
     //Copy the directory into an array of characters
-    while ((cDirectory = readdir(cDir)) != NULL){
+    while ((cDir = readdir(cDirectory)) != NULL){
 
         //Check if the file is a regular file, if it is add to array of characters
-        if(cDirectory->d_type == DT_REG){
-            listOfFiles[i] = cDirectory->d_name;
+        if(cDir->d_type == DT_REG){
+            strcpy(listOfFiles[i] = cDir->d_name);
             i++;
         }
     }
@@ -278,7 +278,7 @@ int getDir(char* listOfFiles[]){
     int numOfFiles = i;
 
     //Close directory
-    closedir(cDir);
+    closedir(cDirectory);
 
     return numOfFiles;
 }
