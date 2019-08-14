@@ -184,28 +184,26 @@ if __name__ == "__main__":
         
 
         #receive the size of the directory from the server on connection Q
-        #dirSize = dataConnQ.recv(7)
-        #print "dirSize = %s" % dirSize
+        dirSize = dataConnQ.recv(7)
+        print "dirSize = %s" % dirSize
         
         #determine if the message from the client is blank
         #if dirSize == "":
-        #    print "Connection has ended, exiting chat with %s" % clientUsername
-        #    print "dirSize = %d\n" % int(dirSize)
-        #    exit(1)
+            print "Connection has ended, exiting chat with %s" % clientUsername
+            print "dirSize = %d\n" % int(dirSize)
+            exit(1)
 
         #confirm that the size of the directory was recv
         dataConnQ.send("OK")
 
         #receive the directory from the server on connection Q
-        #x = 0
-        #ds = int(dirSize.strip('\0'))
-        #print "ds = %d" % ds
-        while (1):
+        x = 0
+        ds = int(dirSize.strip('\0'))
+        print "ds = %d" % ds
+        while (x < dirSize):
             dirFromServer = dataConnQ.recv(4096)[0:-1]
-            if "@@" in dirFromServer:
-                break
-            else:
-                print "%s" % dirFromServer
+            x++
+            print "%s" % dirFromServer
 
         #send confirmation that the directory was received
         dataConnQ.send("OK")
