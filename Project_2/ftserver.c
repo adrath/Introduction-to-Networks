@@ -480,6 +480,7 @@ int main(int argc, char* argv[]) {
             //receive fileName
             char fileName[100];
             recvMessage(establishedConnectionFD, fileName);
+            sleep(1);
 
             //send confirmation that fileName was recv
             sendConfirm(establishedConnectionFD);
