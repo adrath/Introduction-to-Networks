@@ -267,7 +267,7 @@ int getDir(char* listOfFiles[]){
 
         //Check if the file is a regular file, if it is add to array of characters
         if(cDirectory->d_type == DT_REG){
-            strcpy(listOfFiles[i], cDirectory->d_name);
+            listOfFiles[i] = cDirectory->d_name;
             i++;
         }
     }
