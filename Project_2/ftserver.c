@@ -478,9 +478,10 @@ int main(int argc, char* argv[]) {
             sendConfirm(establishedConnectionFD);
 
             //receive fileName
-            char fileName[MAX_SIZE];
-            memset(fileName, '\0', sizeof(fileName));
+            char fileName[100];
             recvMessage(establishedConnectionFD, fileName);
+
+            //send confirmation that fileName was recv
             sendConfirm(establishedConnectionFD);
             printf("Name of File Requested: %s\n", fileName);
 
