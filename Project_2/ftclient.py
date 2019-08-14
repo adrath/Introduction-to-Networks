@@ -185,7 +185,8 @@ if __name__ == "__main__":
         
 
         #receive the size of the directory from the server on connection Q
-        dirSize = dataConnQ.recv(7)[0:-1]
+        dirSize = dataConnQ.recv(6)[0:-1]
+        print "dirSize = %s" % dirSize
         
         #determine if the message from the client is blank
         if dirSize == "":
