@@ -245,8 +245,8 @@ int getDir(char* listOfFiles[]){
             i++;
         }
     }
-    listOfFiles[i] = "@@";
-    i++;
+    //listOfFiles[i] = "@@";
+    //i++;
 
     //Add the number of newline characters that need to be sent to cDirSize
     int numOfFiles = i;
@@ -450,14 +450,14 @@ int main(int argc, char* argv[]) {
 
             //send the directory
             int i = 0;
-            while (i < numOfFiles){
-                sendDir(DPSocket, directoryArray[i]);
-                i++;
+            for (i=0; i < numOfFiles; i++){
                 printf("%s\n",directoryArray[i]);
+                sendDir(DPSocket, directoryArray[i]);
             }
-            //char a[] = "@@";
-            //send(socketFD, a, strlen(a), 0);
-            //printf("@@\n");
+            char *a = "@@";
+            int confirm = send(socketFD, a, strlen(a), 0);
+            if (confirm < 0){
+                fprintf(stderr, "FTSERVER: Error sending the directory size"); exit(1);
 
             //receive ack that the client got the directory
             recvMessage(DPSocket, dirConfirm);
