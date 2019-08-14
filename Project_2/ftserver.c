@@ -432,7 +432,7 @@ int main(int argc, char* argv[]) {
             //send confirmation that the IP address was received
             sendConfirm(establishedConnectionFD);
 
-            sleep(2);
+            sleep(1);
 
             //Set up data link address
             struct addrinfo *dataRes = setUpDataAddress(ipAddr, dataPort);
@@ -442,7 +442,7 @@ int main(int argc, char* argv[]) {
             printf("connection!\n");fflush(stdout);
 
             //send size of directory
-            int confirm = send(DPSocket, &dirSize, sizeof(dirSize), 0);
+            int confirm = send(DPSocket, &numOfFiles, sizeof(numOfFiles), 0);
             if (confirm < 0){
                 fprintf(stderr, "FTSERVER: Error sending the directory size"); exit(1);
             }
