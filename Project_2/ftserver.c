@@ -337,7 +337,7 @@ int getFileSize(char* fileName){
 *******************************************************************************/
 int sendFile(int socketFD, char* fileName, int fileSize){
     if (fileSize < 0){
-        char noFile[] = "Error: File Not Found or Do Not Have Permission To Send";
+        char noFile[] = "Error: File Not Found or Do Not Have Permission To Send\n";
         int check = send(socketFD, noFile, sizeof(noFile), 0);
         if (check < 0){
             perror("FTSERVER: Error sending file to ftclient\n");
