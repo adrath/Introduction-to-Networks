@@ -181,6 +181,9 @@ if __name__ == "__main__":
         #   bound to the socket on the other end of the connection.
         dataConnQ, addr = clientSocket.accept()
         print "Connected on address %s" % str(addr)
+
+        #confirm that the connection was established
+        dataConnQ.send("OK")
         
 
         #receive the size of the directory from the server on connection Q
@@ -193,17 +196,18 @@ if __name__ == "__main__":
         #    print "dirSize = %d\n" % int(dirSize)
         #    exit(1)
 
-        #confirm that the size of the directory was recv
-        dataConnQ.send("OK")
-
         #receive the directory from the server on connection Q
         #x = 0
         #ds = int(dirSize.strip('\0'))
         #print "ds = %d" % ds
+
+        
         dirFromServer = dataConnQ.recv(100)
         while "@" not in dirFromServer:
             print "%s\n" % dirFromServer
             dirFromServer = dataConnQ.recv(100)
+            if dirFromServer == "" or "@" in dirFromServer:
+                break
 
         #send confirmation that the directory was received
         dataConnQ.send("OK")
