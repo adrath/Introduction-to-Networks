@@ -185,28 +185,14 @@ if __name__ == "__main__":
         #confirm that the connection was established
         dataConnQ.send("OK")
         
-
-        #receive the size of the directory from the server on connection Q
-        #dirSize = dataConnQ.recv(7)
-        #print "dirSize = %s" % dirSize
-        
-        #determine if the message from the client is blank
-        #if dirSize == "":
-        #    print "Connection has ended, exiting chat with %s" % clientUsername
-        #    print "dirSize = %d\n" % int(dirSize)
-        #    exit(1)
-
         #receive the directory from the server on connection Q
-        #x = 0
-        #ds = int(dirSize.strip('\0'))
-        #print "ds = %d" % ds
-
         dirFromServer = dataConnQ.recv(100)       
         while "@" not in dirFromServer and dirFromServer != "":
         #     print "%s" % dirFromServer
             dirFromServer = dataConnQ.recv(100)
 
-        print("DirFromServer: %s\n" % dirFromServer)
+        newDirFromServer = dirFromServer.replace("@", "")
+        print(newDirFromServer.replace(",", "\n"))
 
         #send confirmation that the directory was received
         dataConnQ.send("OK")
@@ -293,4 +279,6 @@ https://stackoverflow.com/questions/15869158/python-socket-listening
 https://www.bogotobogo.com/python/python_network_programming_server_client.php
 https://www.pythonforbeginners.com/files/reading-and-writing-files-in-python
 https://www.geeksforgeeks.org/python-program-find-ip-address/
+https://stackoverflow.com/questions/3559559/how-to-delete-a-character-from-a-string-using-python
+
 '''
