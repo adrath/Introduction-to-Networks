@@ -258,7 +258,6 @@ void getDir(char* listOfFiles){
     cDir = opendir(".");
     if (cDir == NULL){
         printf("Cannot open directory\n");
-        return -1;
     }
 
     //Copy the directory into an array of characters
@@ -269,7 +268,7 @@ void getDir(char* listOfFiles){
             snprintf(listOfFiles, sizeof(listOfFiles), "%s,", cDirectory->d_name);
         }
     }
-    snprintf(listOfFiles, sizeof(listOfFiles, "%s", "@");
+    snprintf(listOfFiles, sizeof(listOfFiles), "%s", "@");
 
     //Close directory
     closedir(cDir);
