@@ -200,10 +200,10 @@ if __name__ == "__main__":
         #x = 0
         #ds = int(dirSize.strip('\0'))
         #print "ds = %d" % ds
-        dirFromServer = dataConnQ.recv(70000)[0:-1]
+        dirFromServer = dataConnQ.recv(100)
         while "@@" not in dirFromServer:
-            print "%s" % dirFromServer
-            dirFromServer = dataConnQ.recv(70000)[0:-1]
+            print "%s\n" % dirFromServer
+            dirFromServer = dataConnQ.recv(100)
 
         #send confirmation that the directory was received
         dataConnQ.send("OK")
