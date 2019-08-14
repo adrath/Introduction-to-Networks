@@ -122,7 +122,7 @@ if __name__ == "__main__":
         exit(1)
 
     #Create the initial TCP socket object (Connection P)
-    initConnP = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    initConnP = socket(AF_INET, SOCK_STREAM)
 
     initConnP.connect((serverHost,serverPort))
 
@@ -168,7 +168,7 @@ if __name__ == "__main__":
         print "Check point 4\n"
 
         #set up the new socket on data port (connection Q)
-        clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        clientSocket = socket(socket.AF_INET, socket.SOCK_STREAM)
 
         #Bind to the port
         clientSocket.bind(('',int(dataPort)))
@@ -234,7 +234,7 @@ if __name__ == "__main__":
         print "Check point 3\n"
 
         #set up the new socket on data port (connection Q)
-        clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        clientSocket = socket(AF_INET, SOCK_STREAM)
 
         #Bind to the port
         clientSocket.bind(('',int(dataPort)))
