@@ -355,7 +355,6 @@ void sendDir(int socketFD, char* listOfFiles, int dirSize){
         }
         charWritten += check;
     }
-
 }
 
 
@@ -444,10 +443,10 @@ int main(int argc, char* argv[]) {
             printf("connection!\n");fflush(stdout);
 
             //send size of directory
-            int confirm = send(DPSocket, &dirSize, sizeof(dirSize), 0);
-            if (confirm < 0){
-                fprintf(stderr, "FTSERVER: Error sending the directory size"); exit(1);
-            }
+            //int confirm = send(DPSocket, &dirSize, sizeof(dirSize), 0);
+            //if (confirm < 0){
+            //    fprintf(stderr, "FTSERVER: Error sending the directory size"); exit(1);
+            //}
             
             //Confirm the size of the directory was recv by client
             recvMessage(DPSocket, sizeConfirm);
@@ -458,6 +457,8 @@ int main(int argc, char* argv[]) {
                 sendDir(DPSocket, directoryArray[i], dirSize);
                 i++;
             }
+            char* a = "@@";
+            send(socketFD, a, strlen(a), 0);
 
             //receive ack that the client got the directory
             recvMessage(DPSocket, dirConfirm);
@@ -532,6 +533,7 @@ int main(int argc, char* argv[]) {
 * http://man7.org/linux/man-pages/man3/closedir.3.html
 * http://man7.org/linux/man-pages/man3/opendir.3.html
 * http://man7.org/linux/man-pages/man3/readdir.3.html
+* https://faq.cprogramming.com/cgi-bin/smartfaq.cgi?answer=1046380353&id=1044780608
 *
 * //Sockets
 * https://beej.us/guide/bgnet/html/multi/setsockoptman.html
