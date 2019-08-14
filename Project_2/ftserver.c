@@ -290,15 +290,20 @@ int getDir(char* listOfFiles[]){
 *   to create the connection between the server and the client to send the directory.
 *******************************************************************************/
 void sendDir(int socketFD, char* listOfFiles){
-    size_t stringLength = strlen(listOfFiles);
-    size_t charWritten = 0;
+    // size_t stringLength = strlen(listOfFiles);
+    // size_t charWritten = 0;
 
-    while(charWritten < stringLength){
-        ssize_t check = send(socketFD, listOfFiles, stringLength, 0);
-        if(check < 0){
-            fprintf(stderr, "FTSERVER: ERROR writing directory to socket\n"); exit(1);
-        }
-        charWritten += check;
+    // while(charWritten < stringLength){
+    //     ssize_t check = send(socketFD, listOfFiles, stringLength, 0);
+    //     if(check < 0){
+    //         fprintf(stderr, "FTSERVER: ERROR writing directory to socket\n"); exit(1);
+    //     }
+    //     charWritten += check;
+    // }
+
+    check = send(socketFD, listOfFiles, strlen(listOfFiles), 0);
+    if(check < 0){
+        fprintf(stderr, "FTSERVER: ERROR writing directory to socket\n"); exit(1);
     }
 }
 
