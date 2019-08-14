@@ -474,7 +474,7 @@ int main(int argc, char* argv[]) {
             //    fprintf(stderr, "FTSERVER: Error sending @@"); exit(1);
             //}
 
-            sendDir(directoryArray);
+            sendDir(DPSocket, directoryArray);
 
             //receive ack that the client got the directory
             recvMessage(DPSocket, dirConfirm);
