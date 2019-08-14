@@ -272,7 +272,6 @@ int getDir(char* listOfFiles[]){
         }
     }
     listOfFiles[i] = "@@";
-    i++;
 
     //Add the number of newline characters that need to be sent to cDirSize
     int numOfFiles = i;
@@ -475,7 +474,7 @@ int main(int argc, char* argv[]) {
             int i = 0;
             for (i=0; i < numOfFiles; i++){
                 printf("%s\n",directoryArray[i]);
-                sendDir(DPSocket, directoryArray[i]);
+                send(DPSocket, directoryArray[i], strlen(directoryArray[i]), 0);
             }
             //char *a = "@@";
             //int confirm = send(socketFD, a, sizeof(a), 0);
