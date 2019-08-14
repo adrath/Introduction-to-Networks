@@ -203,11 +203,9 @@ if __name__ == "__main__":
 
         
         dirFromServer = dataConnQ.recv(100)
-        while "@" not in dirFromServer:
-            print "%s\n" % dirFromServer
+        while "@" not in dirFromServer or dirFromServer == "":
+            print "%s" % dirFromServer
             dirFromServer = dataConnQ.recv(100)
-            if dirFromServer == "" or "@" in dirFromServer:
-                break
 
         #send confirmation that the directory was received
         dataConnQ.send("OK")
