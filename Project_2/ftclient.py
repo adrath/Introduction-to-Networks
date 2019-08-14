@@ -201,7 +201,7 @@ if __name__ == "__main__":
         #ds = int(dirSize.strip('\0'))
         #print "ds = %d" % ds
         dirFromServer = dataConnQ.recv(100)[0:-1]
-        while "@@" not in dirFromServer:
+        while "@" not in dirFromServer:
             print "%s\n" % dirFromServer
             dirFromServer = dataConnQ.recv(100)[0:-1]
 
