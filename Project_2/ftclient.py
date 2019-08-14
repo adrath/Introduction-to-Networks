@@ -121,9 +121,8 @@ if __name__ == "__main__":
         print("Commands must be either -l or -g\n")
         exit(1)
 
-    #Create the initial TCP socket object (Connection P)
+    #Create the initial TCP socket object (Connection P) and connect
     initConnP = socket(AF_INET, SOCK_STREAM)
-
     initConnP.connect((serverHost,serverPort))
 
     #get IP address
@@ -185,7 +184,7 @@ if __name__ == "__main__":
         
 
         #receive the size of the directory from the server on connection Q
-        dirSize = dataConnQ.recv(4)
+        dirSize = dataConnQ.recv(7)
         print "dirSize = %s" % dirSize
         
         #determine if the message from the client is blank
