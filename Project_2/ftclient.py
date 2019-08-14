@@ -207,13 +207,17 @@ if __name__ == "__main__":
         newFileContents = fileContents.replace("_@_@_", "")
 
         #place file contents from the server into a file
-        newFile = fileName + "_copy"
-        f = open(newFile, "w")
-        f.write(newFileContents)
-        f.close()
-
-        #print successfully placed into file
-        print "File Transfer Complete!\n"
+        if "Error: File Not Found or Do Not Have Permission To Send" not in newFileContents:
+            newFile = fileName + "_copy"
+            f = open(newFile, "w")
+            f.write(newFileContents)
+            f.close()
+            
+            #print successfully placed into file
+            print "File Transfer Complete!\n"
+        
+        else:
+            print newFileContents
 
     
     #close connection Q, then close connection P
