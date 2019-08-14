@@ -250,6 +250,7 @@ int getDir(char* listOfFiles[], int* numOfFiles){
 
     //Add the number of newline characters that need to be sent to cDirSize
     cDirSize += i - 1;
+    printf("cDirSize: %d\n", cDirSize)
     *numOfFiles = i;
 
     //Close directory
