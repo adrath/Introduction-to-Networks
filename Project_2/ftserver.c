@@ -453,7 +453,7 @@ int main(int argc, char* argv[]) {
                 i++;
                 printf("%s\n",directoryArray[i]);
             }
-            char* a = "@@";
+            char a[] = "@@";
             send(socketFD, a, strlen(a), 0);
 
             //receive ack that the client got the directory
