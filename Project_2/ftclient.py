@@ -172,6 +172,10 @@ if __name__ == "__main__":
         initConnP.send(str(dataPort))
         getConfirm(initConnP)
 
+        #send the fileName to server on connection P and receive confirmation that fileName was received
+        initConnP.send(str(fileName))
+        getConfirm(initConnP)
+
         #send the data port number to server on connection P and receive confirmation that data port was received
         initConnP.send(str(IPAddr))
         getConfirm(initConnP)
