@@ -272,14 +272,12 @@ int getDir(char* listOfFiles[]){
         }
     }
     listOfFiles[i] = "@@";
-
-    //Add the number of newline characters that need to be sent to cDirSize
-    int numOfFiles = i;
+    i++;
 
     //Close directory
     closedir(cDir);
 
-    return numOfFiles;
+    return i;
 }
 
 /*******************************************************************************
