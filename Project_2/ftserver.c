@@ -430,7 +430,7 @@ int main(int argc, char* argv[]) {
 
             sendConfirm(establishedConnectionFD);
 
-            struct addrinfo *dataRes = createDataAddress(ipAddr, dataPort);
+            struct addrinfo *dataRes = setUpDataAddress(ipAddr, dataPort);
             int DPSocket = createSocket(dataRes);
             connectSocket(DPSocket, dataRes);
 
