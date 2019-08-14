@@ -442,7 +442,7 @@ int main(int argc, char* argv[]) {
             printf("connection!\n");fflush(stdout);
 
             //send size of directory
-            int confirm = send(DPSocket, &numOfFiles, sizeof(numOfFiles), 0);
+            int confirm = send(DPSocket, numOfFiles, sizeof(numOfFiles), 0);
             if (confirm < 0){
                 fprintf(stderr, "FTSERVER: Error sending the directory size"); exit(1);
             }
