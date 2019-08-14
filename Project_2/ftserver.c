@@ -353,38 +353,45 @@ int sendFile(int socketFD, char* fileName, int fileSize){
         char sendBuffer[60000];
         memset(sendBuffer, '\0', sizeof(sendBuffer));
 
-        int x;
+        //Open the file
         int fd = open(fileName, O_RDONLY);
     
-        while (1)
-        {
-            int bytes = read(fd, sendBuffer, sizeof(sendBuffer) - 1);
+        //While the file contents have not all been sent, keep in infinite loop
+        while (1) {
+            //read the file contents into the buffer
+            int size = read(fd, sendBuffer, sizeof(sendBuffer) - 1);
 
-            //no bytes read
-            if (bytes == 0){
+            //file contents have been read into the file
+            if (size == 0){
                 break;
             }
-            else if (bytes < 0){
-                fprintf(stderr, "Error. Cannot read file.\n");
-                return;
+
+            //size is < 0, error
+            if (size < 0){
+                printf("FTSERVER: WARNING: Not all data written to socket!\n");
+                return -1;
             }
 
-            void *temp = sendBuffer;
-            while (bytes > 0){
-                int bytesWritten = send(socketFD, temp, sizeof(sendBuffer), 0);
-                if (bytesWritten < 0) {
+            //create a void pointer to act as pointer variable
+            void *tempBuff = sendBuffer;
+
+            //While the size of the file > 0, keep sending the contents of the buffer content
+            while (size > 0){
+                int charWritten = send(socketFD, tempBuff, sizeof(sendBuffer), 0);
+                if (charWritten < 0) {
                     fprintf(stderr, "Error in writing\n");
                     return;
                 }
-                bytes -= bytesWritten;
-                temp += bytesWritten;
+                size -= charWritten;
+                tempBuff += charWritten;
             }
+            //clear the buffer after each round of getting the characters 
             memset(sendBuffer, 0, sizeof(sendBuffer));
         }
 
+        //clear the buffer and load in the trigger code to let the client know they got all of the files content
         memset(sendBuffer, 0, sizeof(sendBuffer));
         strcpy(sendBuffer, "_@_@_");
-        // send signal that done sending
         send(socketFD, sendBuffer, sizeof(sendBuffer), 0);
     }
 
@@ -528,15 +535,6 @@ int main(int argc, char* argv[]) {
             //check to see if the file exits (send an ack saying if the file exists or not)
             int fileSize = getFileSize(fileName);
 
-            //send size of file
-            //int confirm = send(DPSocket, &fileSize, sizeof(fileSize), 0);
-            //if (confirm < 0){
-            //    fprintf(stderr, "FTSERVER: Error sending the directory size"); exit(1);
-            //}
-
-            //Confirm the size of the file was recv by client
-            //recvMessage(DPSocket, sizeConfirm);
-
             //if the file exists, send the file contents
             int errorTest = sendFile(DPSocket, fileName, fileSize);
             if (errorTest < 0){
@@ -550,7 +548,6 @@ int main(int argc, char* argv[]) {
             close(DPSocket);
 
         }
-        
 
     }
 
@@ -569,6 +566,10 @@ int main(int argc, char* argv[]) {
 * https://stackoverflow.com/questions/17131863/passing-string-to-a-function-in-c-with-or-without-pointers
 * https://stackoverflow.com/questions/15739490/should-use-size-t-or-ssize-t
 * https://stackoverflow.com/questions/2620146/how-do-i-return-multiple-values-from-a-function-in-c
+* http://pubs.opengroup.org/onlinepubs/009695399/functions/open.html
+*
+* //Void* 
+* https://stackoverflow.com/questions/29596151/swap-function-using-void-pointers
 *
 * //open, read and close directory
 * https://stackoverflow.com/questions/3554120/open-directory-using-c
