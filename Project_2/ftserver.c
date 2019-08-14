@@ -67,11 +67,11 @@
 /******************************************************************************
 * Function: struct addrinfo *setUpAddress(char *pn)
 * Description: set up the server address structure. A lot of the socket set up
-*   was taken from CS344 examples given by Benjamin Brewster. Specifically it came
-*   from client.c file provided in Block 4 of CS344 course. Also taken from my
-*   CS344 Project 4 - OTP. Please ask for my code if you would like to reference it.
+*   was taken from CS344 examples given by Benjamin Brewster. A lot of the socket 
+*   set up was taken from beej network guide and CS344. Also taken with the help of
+*   the instructor (William Pfiel)..
 * Input: argv[1] (portNumber)
-* Output: struct sockaddr_in serverAddress
+* Output: struct addrinfo *serverAddress
 ******************************************************************************/
 struct addrinfo *setUpAddress(char *pn)
 {
@@ -98,6 +98,15 @@ struct addrinfo *setUpAddress(char *pn)
     return serverAddress;
 }
 
+/******************************************************************************
+* Function: struct addrinfo* setUpDataAddress(char* ipAddr, char* dataPort)
+* Description: set up the server address structure. A lot of the socket set up
+*   was taken from beej network guide and CS344. Also taken with the help of
+*   the instructor (William Pfiel).
+* Input: char* ipAddr, char* dataPort
+* Output: struct addrinfo* res
+******************************************************************************/
+
 struct addrinfo* setUpDataAddress(char* ipAddr, char* dataPort){
     struct addrinfo hints, *res;
     
@@ -117,7 +126,9 @@ struct addrinfo* setUpDataAddress(char* ipAddr, char* dataPort){
 /******************************************************************************
 * Function: int createSocket(struct addrinfo * res)
 * Description: set up the socket and double check that the socket created actually
-*   connected to the server. Establish the connection as well.
+*   connected to the server. Establish the connection as well. A lot of the socket 
+*   set up was taken from beej network guide and CS344. Also taken with the help of
+*   the instructor (William Pfiel).
 * Input: struct addrinfo * res
 * Output: int socketFD
 ******************************************************************************/
@@ -133,7 +144,14 @@ int createSocket(struct addrinfo * res){
 	return socketFD;
 }
 
-
+/*******************************************************************************
+* Function: void connectSocket(int socketFD, struct addrinfo * res)
+* Description: this function will connect the sockets. A lot of the socket 
+*   set up was taken from beej network guide and CS344. Also taken with the help of
+*   the instructor (William Pfiel).
+* Input: int socketFD, struct addrinfo * res
+* Output: N/A
+*******************************************************************************/
 void connectSocket(int socketFD, struct addrinfo * res){
 	int status;
 	
@@ -147,8 +165,16 @@ void connectSocket(int socketFD, struct addrinfo * res){
 	}
 }
 
-void bindAndListen(int socketFD, struct addrinfo *res)
-{
+/*******************************************************************************
+* Function: void bindAndListen(int socketFD, struct addrinfo *res)
+* Description: this function will bind and listen for a connection to the socket
+*   created and passed into the function. A lot of the socket 
+*   set up was taken from beej network guide and CS344. Also taken with the help of
+*   the instructor (William Pfiel).
+* Input: int socketFD, struct addrinfo *res;
+* Output: N/A
+*******************************************************************************/
+void bindAndListen(int socketFD, struct addrinfo *res){
     int flag = bind(socketFD, res->ai_addr, res->ai_addrlen);
     if (flag == -1)
     {
@@ -257,6 +283,24 @@ int getDir(char* listOfFiles[]){
     return numOfFiles;
 }
 
+/*******************************************************************************
+* Function: void sendDir(int socketFD, char* listOfFiles[])
+* Description: send the entire list of files in the directory. Keep track that 
+*   the entire list of characters was sent. Will call setUpAddress and createSocket
+*   to create the connection between the server and the client to send the directory.
+*******************************************************************************/
+void sendDir(int socketFD, char* listOfFiles){
+    size_t stringLength = strlen(listOfFiles);
+    size_t charWritten = 0;
+
+    while(charWritten < stringLength){
+        ssize_t check = send(socketFD, listOfFiles, stringLength, 0);
+        if(check < 0){
+            fprintf(stderr, "FTSERVER: ERROR writing directory to socket\n"); exit(1);
+        }
+        charWritten += check;
+    }
+}
 
 /*******************************************************************************
 * Function: getFileSize(char* fileName)
@@ -334,27 +378,6 @@ int sendFile(int socketFD, char* fileName, int fileSize){
     }
 
 }
-
-
-/*******************************************************************************
-* Function: void sendDir(int socketFD, char* listOfFiles[])
-* Description: send the entire list of files in the directory. Keep track that 
-*   the entire list of characters was sent. Will call setUpAddress and createSocket
-*   to create the connection between the server and the client to send the directory.
-*******************************************************************************/
-void sendDir(int socketFD, char* listOfFiles){
-    size_t stringLength = strlen(listOfFiles);
-    size_t charWritten = 0;
-
-    while(charWritten < stringLength){
-        ssize_t check = send(socketFD, listOfFiles, stringLength, 0);
-        if(check < 0){
-            fprintf(stderr, "FTSERVER: ERROR writing directory to socket\n"); exit(1);
-        }
-        charWritten += check;
-    }
-}
-
 
 /*******************************************************************************
 * Function: int main(int argc, char* argv[])
@@ -455,7 +478,7 @@ int main(int argc, char* argv[]) {
                 sendDir(DPSocket, directoryArray[i]);
             }
             char *a = "@@";
-            int confirm = send(socketFD, a, strlen(a), 0);
+            int confirm = send(socketFD, a, sizeof(a), 0);
             if (confirm < 0){
                 fprintf(stderr, "FTSERVER: Error sending the directory size"); exit(1);
             }
