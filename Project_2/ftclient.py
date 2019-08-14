@@ -199,7 +199,7 @@ if __name__ == "__main__":
 
         #receive the directory from the server on connection Q
         x = 0
-        ds = int(dirSize)
+        ds = int(dirSize.strip('\0'))
         print "ds = %d" % ds
         while (x < ds):
             dirFromServer = dataConnQ.recv(ds)[0:-1]
