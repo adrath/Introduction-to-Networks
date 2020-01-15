@@ -1,6 +1,6 @@
 The project was tested on flip3. Please use flip3.
 
-1) Get the server up and running by typing: python chatServer.py [port]
+1) Get the server up and running by typing: python chatServe.py [port]
 2) In a separate window, compile the client by typing make
 3) Run the client in the same window as 2) by typing ./chatClient flip3 [port], the port being the same as the server in 1)
 
